@@ -6,7 +6,7 @@
   "keywords": "http server microservice docker",
   "repository": {
     "type": "git",
-    "url": "git://github.com/jameskyburz/service-base.git"
+    "url": "git://github.com/jameskyburz/server-base.git"
   },
   "author": {
     "name": "James Kyburz",
