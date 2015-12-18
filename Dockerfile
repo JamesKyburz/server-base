@@ -1,4 +1,4 @@
-from nodesource/trusty:5.1.0
+from nodesource/trusty:5.3.0
 
 RUN apt-get update &&\
   apt-get install -y --force-yes --no-install-recommends\
