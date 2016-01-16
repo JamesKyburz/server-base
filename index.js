@@ -9,10 +9,12 @@ module.exports = create
 function create (name, routes) {
   var server
 
-  return {
+  var methods = {
     start: start,
     config: config()
   }
+
+  return methods
 
   function start (port) {
     server = http.createServer(router(name, log, routes))
@@ -30,6 +32,7 @@ function create (name, routes) {
     keys.forEach(function (key) {
       if (typeof process.env[key] === 'undefined') throw new Error('process.env.' + key + ' is missing')
     })
+    return methods
   }
 
   function running () {
