@@ -20,13 +20,13 @@ expose 1900
 }
 ```
 
-### main.js
+### index.js
 ```
 var service = require('server-base')
 var routes = require('./routes')
-var app = service('awesome-server', routes)
-app.config.assert(['PORT'])
-app.start()
+service('awesome-server', routes)
+.config.assert(['PORT'])
+.start()
 ```
 
 ### routes.js
@@ -35,9 +35,7 @@ app.start()
 module.exports = routes
 
 function routes (router) {
-  router.set('/hello', (q, r) => {
-    r.end('world')
-  })
+  router.set('/hello', (q, r) => r.end('world'))
 }
 ```
 
