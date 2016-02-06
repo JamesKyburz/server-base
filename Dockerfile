@@ -1,4 +1,4 @@
-from nodesource/trusty:5.3.0
+from nodesource/trusty:5.5.0
 
 RUN apt-get update &&\
   apt-get install -y --force-yes --no-install-recommends\
@@ -7,6 +7,7 @@ RUN apt-get update &&\
 
 ONBUILD RUN mkdir -p /usr/src/app
 ONBUILD WORKDIR /usr/src/app
-ONBUILD ADD . /usr/src/app
+ONBUILD ADD package.json /usr/src/app/package.json
 ONBUILD RUN npm install
+ONBUILD ADD . /usr/src/app
 ONBUILD CMD npm start
