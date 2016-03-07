@@ -17,6 +17,7 @@ function create (name, createLog, routeDefinitions) {
     jsonBody: jsonBody,
     formBody: formBody,
     errorReply: errorReply,
+    corsify: corsify,
     defaultRoute: defaultRoute
   }
 
@@ -28,7 +29,9 @@ function create (name, createLog, routeDefinitions) {
   function ping (q, r) { r.end(name) }
 
   if (routeDefinitions) routeDefinitions.call(context, router)
-  return corsify(defaultRoute)
+
+  if (process.env.CORS) return corsify(defaultRoute)
+  return defaultRoute
 
   function defaultRoute (q, r) {
     [logRequest, mimeTypes].forEach((fn) => fn(q, r))
