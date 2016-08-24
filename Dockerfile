@@ -1,4 +1,4 @@
-from nodesource/trusty:5.5.0
+from mhart/alpine-node:6.4.0
 
 RUN apt-get update &&\
   apt-get install -y --force-yes --no-install-recommends\
