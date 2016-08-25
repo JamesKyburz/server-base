@@ -4,6 +4,8 @@ var dotenv = require('dotenv')
 var router = require('./router')
 dotenv.load({ silent: true })
 
+var started = {}
+
 module.exports = create
 
 function create (name, routes) {
@@ -17,9 +19,20 @@ function create (name, routes) {
   return methods
 
   function start (port) {
-    server = http.createServer(router(name, log, routes))
-    server.listen(port || process.env.PORT, running)
+    port = port || process.env.PORT
+    server = started[port]
+    if (!server) {
+      server = http.createServer()
+      server.listen(port, running)
+      started[port] = server
+    }
+    addRoutes()
     return server
+  }
+
+  function addRoutes () {
+    server.removeAllListeners('request')
+    server.on('request', router(name, log, routes))
   }
 
   function config () {
