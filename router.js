@@ -9,6 +9,7 @@ mime.default_type = 'text/html'
 module.exports = create
 
 function create (name, createLog, routeDefinitions) {
+  var middlewareFunctions = []
   var context = {
     createLog: createLog,
     log: createLog(name),
@@ -18,7 +19,7 @@ function create (name, createLog, routeDefinitions) {
     formBody: formBody,
     errorReply: errorReply,
     corsify: corsify,
-    defaultRoute: defaultRoute
+    use: use
   }
 
   var log = context.log
@@ -33,11 +34,24 @@ function create (name, createLog, routeDefinitions) {
   if (process.env.CORS) return corsify(defaultRoute)
   return defaultRoute
 
+  function use (fn) {
+    middlewareFunctions.push(fn)
+  }
+
+  function applyMiddelware (q, r, done) {
+    var fns = middlewareFunctions.slice()
+    ;(function next () {
+      (fns.shift() || done).call(context, q, r, next)
+    })()
+  }
+
   function defaultRoute (q, r) {
     [logRequest, mimeTypes].forEach((fn) => fn(q, r))
-    var match = router.get(q.url)
-    if (match.handler) return match.handler(q, r, match.params, match.splat)
-    notFound(q, r)
+    applyMiddelware(q, r, function () {
+      var match = router.get(q.url)
+      if (match.handler) return match.handler(q, r, match.params, match.splat)
+      notFound(q, r)
+    })
   }
 
   function mimeTypes (q, r) {
