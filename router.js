@@ -35,7 +35,8 @@ function create (name, createLog, routeDefinitions) {
   return defaultRoute
 
   function use (fn) {
-    middlewareFunctions.push(fn)
+    var fns = Array.isArray(fn) ? fn : [fn]
+    middlewareFunctions.push.apply(middlewareFunctions, fns)
   }
 
   function applyMiddelware (q, r, done) {
