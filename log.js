@@ -18,7 +18,7 @@ function createLog (name) {
     opt.stream = pretty
     pretty.pipe(process.stdout)
   } else {
-    opt.stream = process.stdouttt
+    opt.stream = process.stdout
   }
 
   var bunyanlog = bunyan.createLogger(opt)
