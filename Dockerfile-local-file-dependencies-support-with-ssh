@@ -5,9 +5,14 @@ RUN apt-get update &&\
   ssh &&\
   rm -rf /var/lib/apt/lists/*
 
+ONBUILD RUN mkdir -p /root/.ssh
+ONBUILD ADD ./docker_ssh/id_rsa /root/.ssh/id_rsa
+ONBUILD RUN chmod 0700 /root/.ssh/id_rsa
+ONBUILD ADD ./docker_ssh/config /root/.ssh/config
+
 ONBUILD RUN mkdir -p /usr/src/app
 ONBUILD WORKDIR /usr/src/app
-ONBUILD ADD package.json /usr/src/app/package.json
-ONBUILD RUN npm install
+
 ONBUILD ADD . /usr/src/app
+ONBUILD RUN npm install
 ONBUILD CMD npm start
