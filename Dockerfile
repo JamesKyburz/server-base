@@ -1,4 +1,4 @@
-from node:6.6-wheezy
+from node:6.7-wheezy
 
 RUN apt-get update &&\
   apt-get install -y --force-yes --no-install-recommends\
