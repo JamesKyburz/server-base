@@ -4,6 +4,9 @@ var corsify = require('corsify')
 var json = require('body/json')
 var form = require('body/form')
 
+var MIME_TYPES = JSON.parse(process.env.MIME_TYPES || '{}')
+mime.define(MIME_TYPES)
+
 mime.default_type = 'text/html'
 
 module.exports = create
