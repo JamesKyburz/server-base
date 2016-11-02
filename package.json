@@ -1,6 +1,6 @@
 {
   "name": "server-base",
-  "version": "2.0.17",
+  "version": "2.0.18",
   "description": "server base",
   "main": "index.js",
   "keywords": "http server microservice docker",
