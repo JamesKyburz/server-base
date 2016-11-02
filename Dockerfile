@@ -1,5 +1,7 @@
 from node:6.9-wheezy
 
+maintainer James Kyburz "james.kyburz@gmail.com"
+
 RUN apt-get update &&\
   apt-get install -y --force-yes --no-install-recommends\
   ssh &&\
