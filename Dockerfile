@@ -4,8 +4,11 @@ maintainer James Kyburz "james.kyburz@gmail.com"
 
 RUN apt-get update &&\
   apt-get install -y --force-yes --no-install-recommends\
-  ssh &&\
+  curl ssh &&\
   rm -rf /var/lib/apt/lists/*
+
+RUN curl -o- -L https://yarnpkg.com/install.sh | bash
+ENV PATH "$PATH:/root/.yarn/bin"
 
 ONBUILD WORKDIR /usr/src/app
 ONBUILD ADD package.json /usr/src/app/package.json
