@@ -7,9 +7,6 @@ RUN apt-get update &&\
   curl ssh &&\
   rm -rf /var/lib/apt/lists/*
 
-RUN curl -o- -L https://yarnpkg.com/install.sh | bash
-ENV PATH "$PATH:/root/.yarn/bin"
-
 ONBUILD WORKDIR /usr/src/app
 ONBUILD ADD package.json /usr/src/app/package.json
 ONBUILD RUN npm install
