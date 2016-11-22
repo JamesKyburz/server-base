@@ -7,7 +7,6 @@ RUN apt-get update &&\
   ssh &&\
   rm -rf /var/lib/apt/lists/*
 
-ONBUILD RUN mkdir -p /usr/src/app
 ONBUILD WORKDIR /usr/src/app
 ONBUILD ADD package.json /usr/src/app/package.json
 ONBUILD RUN npm install
