@@ -5,7 +5,7 @@ base for micro services or simple servers
 ### DockerFile
 
 ```
-from server-base
+from jameskyburz/server-base:lastest
 expose 1900
 ```
 
@@ -13,7 +13,6 @@ expose 1900
 ```json
 {
   "scripts": {
-    "predocker:build": "docker build -t server-base git@github.com:JamesKyburz/server-base.git",
     "docker:build": "docker build -t awesome-server .",
     "docker:run": "docker run -d --restart=always -p 1900:1900 --name awesome-server awesome-server"
   }
