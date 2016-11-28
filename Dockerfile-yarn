@@ -11,7 +11,7 @@ RUN curl -o- -L https://yarnpkg.com/install.sh | bash
 ENV PATH "$PATH:/root/.yarn/bin"
 
 ONBUILD WORKDIR /usr/src/app
-ONBUILD ADD yarn.lock package.json /usr/src/app/package.json
+ONBUILD ADD yarn.lock package.json /usr/src/app/
 ONBUILD RUN yarn install
 ONBUILD ADD . /usr/src/app
 ONBUILD CMD yarn start
