@@ -1,6 +1,5 @@
 var mime = require('mime')
 var routes = require('http-hash')
-var corsify = require('corsify')
 var json = require('body/json')
 var form = require('body/form')
 
@@ -21,7 +20,6 @@ function create (name, createLog, routeDefinitions) {
     jsonBody: jsonBody,
     formBody: formBody,
     errorReply: errorReply,
-    corsify: corsify,
     use: use
   }
 
@@ -34,7 +32,6 @@ function create (name, createLog, routeDefinitions) {
 
   if (routeDefinitions) routeDefinitions.call(context, router)
 
-  if (process.env.CORS) return corsify(defaultRoute)
   return defaultRoute
 
   function use (fn) {
