@@ -11,7 +11,6 @@ mime.default_type = 'text/html'
 module.exports = create
 
 function create (name, createLog, routeDefinitions) {
-  var middlewareFunctions = []
   var context = {
     createLog: createLog,
     log: createLog(name),
@@ -20,10 +19,9 @@ function create (name, createLog, routeDefinitions) {
     jsonBody: jsonBody,
     formBody: formBody,
     errorReply: errorReply,
-    use: use
+    use: use,
+    middlewareFunctions: []
   }
-
-  var log = context.log
 
   var router = routes()
 
@@ -37,11 +35,11 @@ function create (name, createLog, routeDefinitions) {
 
   function use (fn) {
     var fns = Array.isArray(fn) ? fn : [fn]
-    middlewareFunctions.push.apply(middlewareFunctions, fns)
+    context.middlewareFunctions.push.apply(context.middlewareFunctions, fns)
   }
 
   function applyMiddelware (q, r, done) {
-    var fns = middlewareFunctions.slice()
+    var fns = context.middlewareFunctions.slice()
     ;(function next () {
       (fns.shift() || done).call(context, q, r, next)
     })()
@@ -51,32 +49,32 @@ function create (name, createLog, routeDefinitions) {
     applyMiddelware(q, r, function () {
       var match = router.get(q.url)
       if (match.handler) return match.handler(q, r, match.params, match.splat)
-      notFound(q, r)
+      context.notFound(q, r)
     })
   }
 
   function mimeTypes (q, r, next) {
-    var contentType = mime.lookup(q.url)
-    var charset = mime.charsets.lookup(contentType)
+    var contentType = context.mime.lookup(q.url)
+    var charset = context.mime.charsets.lookup(contentType)
     if (charset) contentType += '; charset=' + charset
     r.setHeader('Content-Type', contentType)
     next()
   }
 
   function logRequest (q, r, next) {
-    log.info(q.url)
+    context.log.info(q.url)
     next()
   }
 
   function notFound (q, r) {
-    log.error('not found %s', q.url)
+    context.log.error('not found %s', q.url)
     r.writeHead(404)
     r.end()
   }
 
   function errorReply (q, r, err, statusCode) {
     var message = err.message || err
-    log.error('error %s %s', q.url, message)
+    context.log.error('error %s %s', q.url, message)
     r.writeHead(statusCode || 500)
     r.write(message)
     return r.end()
@@ -84,24 +82,24 @@ function create (name, createLog, routeDefinitions) {
 
   function formBody (q, r, cb) {
     form(q, {}, (err, body) => {
-      if (err) return errorReply(q, r, err)
-      log.info('form request %s %j', q.url, body)
+      if (err) return context.errorReply(q, r, err)
+      context.log.info('form request %s %j', q.url, body)
       try {
         cb(body)
       } catch (err) {
-        errorReply(q, r, err)
+        context.errorReply(q, r, err)
       }
     })
   }
 
   function jsonBody (q, r, cb) {
     json(q, r, (err, payload) => {
-      if (err) return errorReply(q, r, err)
-      log.info('json request %s %j', q.url, payload)
+      if (err) return context.errorReply(q, r, err)
+      context.log.info('json request %s %j', q.url, payload)
       try {
         cb(payload)
       } catch (err) {
-        errorReply(q, r, err)
+        context.errorReply(q, r, err)
       }
     })
   }
