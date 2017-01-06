@@ -32,7 +32,7 @@ function create (name, routes) {
 
   function addRoutes () {
     server.removeAllListeners('request')
-    server.on('request', router(name, log, routes))
+    server.on('request', router(name, routes))
   }
 
   function config () {
