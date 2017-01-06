@@ -31,7 +31,7 @@ function create (name, createLog, routeDefinitions) {
   function ping (q, r) { r.end(name) }
 
   use([logRequest, mimeTypes])
-  if (routeDefinitions) routeDefinitions.call(context, router)
+  if (routeDefinitions) routeDefinitions.call(context, router, context)
 
   return defaultRoute
 
