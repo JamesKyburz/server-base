@@ -30,6 +30,7 @@ function create (name, createLog, routeDefinitions) {
   router.set('/ping', ping)
   function ping (q, r) { r.end(name) }
 
+  use([logRequest, mimeTypes])
   if (routeDefinitions) routeDefinitions.call(context, router)
 
   return defaultRoute
@@ -47,7 +48,6 @@ function create (name, createLog, routeDefinitions) {
   }
 
   function defaultRoute (q, r) {
-    [logRequest, mimeTypes].forEach((fn) => fn(q, r))
     applyMiddelware(q, r, function () {
       var match = router.get(q.url)
       if (match.handler) return match.handler(q, r, match.params, match.splat)
@@ -55,11 +55,17 @@ function create (name, createLog, routeDefinitions) {
     })
   }
 
-  function mimeTypes (q, r) {
+  function mimeTypes (q, r, next) {
     var contentType = mime.lookup(q.url)
     var charset = mime.charsets.lookup(contentType)
     if (charset) contentType += '; charset=' + charset
     r.setHeader('Content-Type', contentType)
+    next()
+  }
+
+  function logRequest (q, r, next) {
+    log.info(q.url)
+    next()
   }
 
   function notFound (q, r) {
@@ -74,10 +80,6 @@ function create (name, createLog, routeDefinitions) {
     r.writeHead(statusCode || 500)
     r.write(message)
     return r.end()
-  }
-
-  function logRequest (q, r) {
-    log.info(q.url)
   }
 
   function formBody (q, r, cb) {
