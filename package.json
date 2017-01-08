@@ -16,7 +16,7 @@
     "prepublish": "standard"
   },
   "dependencies": {
-    "dotenv": "2.0.0",
+    "dotenv": "4.0.0",
     "server-base-router": "1.0.0",
     "server-base-log": "1.0.0"
   },
