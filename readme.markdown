@@ -17,11 +17,11 @@ Calling start with no arguments requires process.env.PORT to be set.
 
 ### router
 
-See [server-base-router](https://npm.im/server-base-router) for details, can be used without this module.
+See [server-base-router](https://npm.im/server-base-router) for details.
 
 ### logger
 
-See [server-base-log](https://npm.im/server-base-log) for details, can be used without this module.
+See [server-base-log](https://npm.im/server-base-log) for details.
 
 ### Docker
 
