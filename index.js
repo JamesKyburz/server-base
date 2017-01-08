@@ -2,7 +2,7 @@ var http = require('http')
 var log = require('./log')
 var dotenv = require('dotenv')
 var router = require('./router')
-dotenv.load({ silent: true })
+dotenv.load()
 
 var started = {}
 
