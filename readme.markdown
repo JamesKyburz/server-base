@@ -2,44 +2,38 @@
 
 base for micro services or simple servers
 
-### DockerFile
+### usage
 
-```
-from jameskyburz/server-base:lastest
-expose 1900
-```
-
-### package.json
-```json
-{
-  "scripts": {
-    "docker:build": "docker build -t awesome-server .",
-    "docker:run": "docker run -d --restart=always -p 1900:1900 --name awesome-server awesome-server"
-  }
-}
-```
-
-### index.js
 ```
 var service = require('server-base')
-var routes = require('./routes')
-service('awesome-server', routes)
-.config.assert(['PORT'])
-.start()
-```
-
-### routes.js
-
-```
-module.exports = routes
-
-function routes (router) {
+var name = require('./package.json').name
+service(name, (router, context) => {
   router.set('/hello', (q, r) => r.end('world'))
-}
+})
+.start(1234)
 ```
+
+Calling start with no arguments requires process.env.PORT to be set.
+
+### router
+
+See [server-base-router](https://npm.im/server-base-router) for details, can be used without this module.
+
+### logger
+
+See [server-base-log](https://npm.im/server-base-log) for details, can be used without this module.
+
+### Docker
+
+Docker images hosted at https://hub.docker.com/r/jameskyburz/server-base/
+
+See [server-base-docker](https://github.com/JamesKyburz/server-base-docker) repository.
 
 ### .env
-```
+
+If a .env file exists it will load the values into process.env using [dotenv](https://npm.im/dotenv).
+
+```dosini
 PORT=1900
 ```
 
