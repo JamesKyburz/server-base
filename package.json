@@ -17,8 +17,8 @@
   },
   "dependencies": {
     "dotenv": "4.0.0",
-    "server-base-router": "2.0.6",
-    "server-base-log": "2.1.6"
+    "server-base-router": "2.2.8",
+    "server-base-log": "2.1.7"
   },
   "devDependencies": {
     "standard": "9.0.0"
