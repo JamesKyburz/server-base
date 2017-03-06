@@ -6,7 +6,7 @@
   "keywords": "log server-base logging pino http",
   "repository": {
     "type": "git",
-    "url": "git://github.com/jameskyburz/server-base-log.git"
+    "url": "git://github.com/jameskyburz/server-base.git"
   },
   "author": {
     "name": "James Kyburz",

@@ -6,7 +6,7 @@
   "keywords": "http router server-base middleware",
   "repository": {
     "type": "git",
-    "url": "git://github.com/jameskyburz/server-base-router.git"
+    "url": "git://github.com/jameskyburz/server-base.git"
   },
   "author": {
     "name": "James Kyburz",
