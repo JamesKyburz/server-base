@@ -149,18 +149,13 @@ function responseHelpers (context, q, r) {
   let errorCode
   let errorText
   r.notFound = context.notFound.bind(context, q, r)
-  r.setNextErrorMessage((code, text) => {
+  r.setNextErrorMessage = (code, text) => {
     errorCode = code
     errorText = text
-  })
+  }
   r.error = (err) => {
     context.errorReply(q, r, errorCode || 500, errorText || err)
   }
-
-  Object.defineProperty(r, 'onErrorCode', {
-    set (code) { errorCode = code },
-    get () { return errorCode }
-  })
 }
 
 function runGenerator (fn, context) {
