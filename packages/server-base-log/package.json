@@ -1,0 +1,25 @@
+{
+  "name": "server-base-log",
+  "version": "4.0.9",
+  "description": "server base log wrapper using pino",
+  "main": "index.js",
+  "keywords": "log server-base logging pino http",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/jameskyburz/server-base-log.git"
+  },
+  "author": {
+    "name": "James Kyburz",
+    "email": "james.kyburz@gmail.com"
+  },
+  "scripts": {
+    "prepublish": "standard"
+  },
+  "dependencies": {
+    "pino": "4.0.2"
+  },
+  "devDependencies": {
+    "standard": "9.0.0"
+  },
+  "license": "MIT"
+}
