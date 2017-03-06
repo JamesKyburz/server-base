@@ -149,12 +149,12 @@ function responseHelpers (context, q, r) {
   let errorCode
   let errorText
   r.notFound = context.notFound.bind(context, q, r)
-  r.setNextErrorMessage = (code, text) => {
+  r.setNextErrorMessage = (err, code) => {
+    errorText = err
     errorCode = code
-    errorText = text
   }
-  r.error = (err) => {
-    context.errorReply(q, r, errorCode || 500, errorText || err)
+  r.error = (err, code) => {
+    context.errorReply(q, r, errorText || err, errorCode || code || 500)
   }
 }
 
