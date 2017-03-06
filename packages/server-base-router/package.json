@@ -1,6 +1,6 @@
 {
   "name": "server-base-router",
-  "version": "4.0.9",
+  "version": "4.0.10",
   "description": "server base router",
   "main": "index.js",
   "keywords": "http router server-base middleware",
