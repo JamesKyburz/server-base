@@ -143,13 +143,13 @@ function responseHelpers (context, q, r) {
   let errorCode
   let errorText
   r.notFound = context.notFound.bind(context, q, r)
-  r.setNextErrorMessage = (err, code) => {
-    errorText = err
-    errorCode = code
-  }
+  r.setNextErrorMessage = (err, code) => { errorText = err; errorCode = code }
+  r.setNextErrorCode = (code) => { errorText = ''; errorCode = code }
   r.error = (err, code) => {
     context.errorReply(q, r, errorText || err, errorCode || code || 500)
   }
+  r.json = (json) => r.end(JSON.stringify(json))
+  r.text = r.end.bind(r)
 }
 
 function runGenerator (fn, context) {
