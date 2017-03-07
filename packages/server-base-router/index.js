@@ -58,9 +58,10 @@ function create (name, routeDefinitions) {
     applyMiddelware(q, r, function () {
       const match = router.get(q.url)
       if (match.handler) {
-        const handler = isGenerator(match.handler)
-        ? runGenerator(match.handler, context).bind(match.handler)
-        : match.handler.bind(match.handler)
+        const fn = typeof match.handler === 'function'
+        ? match.handler
+        : methodWrap(context, q.method, match.handler)
+        const handler = isGenerator(fn) ? runGenerator(fn, context) : fn
         return handler(q, r, match.params, match.splat)
       }
       context.notFound(q, r)
@@ -128,6 +129,12 @@ function create (name, routeDefinitions) {
     opt = Object.assign({ log: true }, opt)
     return { opt, cb }
   }
+}
+
+function methodWrap (context, method, methods) {
+  method = method.toLowerCase()
+  return methods[method] ||
+    ((q, r) => r.error(`method ${method} not allowed for ${q.url}`, 405))
 }
 
 function requestHelpers (context, q, r) {
