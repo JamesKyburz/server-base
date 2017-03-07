@@ -41,7 +41,7 @@ function create (name, routeDefinitions) {
     context.middlewareFunctions.push.apply(context.middlewareFunctions, fns)
   }
 
-  function applyMiddelware (q, r, done) {
+  function applyMiddleware (q, r, done) {
     const fns = context.middlewareFunctions.slice()
     ;(function next () {
       const fn = (fns.shift() || done)
@@ -56,7 +56,7 @@ function create (name, routeDefinitions) {
   function defaultRoute (q, r) {
     requestHelpers(context, q, r)
     responseHelpers(context, q, r)
-    applyMiddelware(q, r, function () {
+    applyMiddleware(q, r, function () {
       const match = router.get(q.url)
       if (match.handler) {
         const fn = typeof match.handler === 'function'
