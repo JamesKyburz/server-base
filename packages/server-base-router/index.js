@@ -97,12 +97,12 @@ function create (name, routeDefinitions) {
   function formBody (q, r, opt, cb) {
     const args = parseBodyArguments(opt, cb); opt = args.opt; cb = args.cb
     form(q, {}, (err, body) => {
-      if (err) return context.errorReply(q, r, err)
+      if (err) return r.error(err)
       if (opt && opt.log) context.log.info('form request %s %j', q.url, body)
       try {
         cb(body)
       } catch (err) {
-        context.errorReply(q, r, err)
+        r.error(err)
       }
     })
   }
@@ -110,12 +110,12 @@ function create (name, routeDefinitions) {
   function jsonBody (q, r, opt, cb) {
     const args = parseBodyArguments(opt, cb); opt = args.opt; cb = args.cb
     json(q, r, (err, payload) => {
-      if (err) return context.errorReply(q, r, err)
+      if (err) return r.error(err)
       if (opt && opt.log) context.log.info('json request %s %j', q.url, payload)
       try {
         cb(payload)
       } catch (err) {
-        context.errorReply(q, r, err)
+        r.error(err)
       }
     })
   }
