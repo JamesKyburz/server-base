@@ -26,15 +26,6 @@ function create (name, routeDefinitions) {
   }
 
   const router = routes()
-  const set = router.set.bind(router)
-
-  router.set = (match, fn) => {
-    if (isGenerator(fn)) {
-      set(match, runGenerator(fn, context))
-    } else {
-      set(match, fn)
-    }
-  }
 
   router.set('/ping', ping)
   function ping (q, r) { r.end(name) }
@@ -67,7 +58,10 @@ function create (name, routeDefinitions) {
     applyMiddelware(q, r, function () {
       const match = router.get(q.url)
       if (match.handler) {
-        return match.handler(q, r, match.params, match.splat)
+        const handler = isGenerator(match.handler)
+        ? runGenerator(match.handler, context).bind(match.handler)
+        : match.handler.bind(match.handler)
+        return handler(q, r, match.params, match.splat)
       }
       context.notFound(q, r)
     })
