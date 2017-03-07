@@ -4,6 +4,7 @@ const json = require('body/json')
 const form = require('body/form')
 const createLog = require('server-base-log')
 const isGenerator = require('is-generator-function')
+const runGenerator = require('run-duck-run')
 
 const MIME_TYPES = JSON.parse(process.env.MIME_TYPES || '{}')
 mime.define(MIME_TYPES)
@@ -45,7 +46,7 @@ function create (name, routeDefinitions) {
     ;(function next () {
       const fn = (fns.shift() || done)
       if (isGenerator(fn)) {
-        runGenerator(fn, context)(q, r, next)
+        runGenerator(fn, r.error)(q, r, next)
       } else {
         fn.call(context, q, r, next)
       }
@@ -61,7 +62,7 @@ function create (name, routeDefinitions) {
         const fn = typeof match.handler === 'function'
         ? match.handler
         : methodWrap(context, q.method, match.handler)
-        const handler = isGenerator(fn) ? runGenerator(fn, context) : fn
+        const handler = isGenerator(fn) ? runGenerator(fn, r.error) : fn
         return handler(q, r, match.params, match.splat)
       }
       context.notFound(q, r)
@@ -157,28 +158,4 @@ function responseHelpers (context, q, r) {
   }
   r.json = (json) => r.end(JSON.stringify(json))
   r.text = r.end.bind(r)
-}
-
-function runGenerator (fn, context) {
-  return function (q, r, params, splat) {
-    const it = fn.apply(this, [q, r, params, splat])
-    next(it.next())
-    function next (result) {
-      if (result.done) return
-      if (Promise.resolve(result.value) === result.value) {
-        result.value
-          .then((value) => next(it.next(value)))
-          .catch(r.error)
-        return
-      }
-      if (typeof result.value === 'function') {
-        result.value((err, value) => {
-          if (err) return r.error(err)
-          next(it.next(value))
-        })
-      } else {
-        next(it.next(result.value))
-      }
-    }
-  }
 }
