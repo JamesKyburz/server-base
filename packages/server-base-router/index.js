@@ -121,15 +121,15 @@ function create (name, routeDefinitions) {
       }
     })
   }
+}
 
-  function parseBodyArguments (opt, cb) {
-    if (typeof opt === 'function') {
-      cb = opt
-      opt = {}
-    }
-    opt = Object.assign({ log: true }, opt)
-    return { opt, cb }
+function parseBodyArguments (opt, cb) {
+  if (typeof opt === 'function') {
+    cb = opt
+    opt = {}
   }
+  opt = Object.assign({ log: true }, opt)
+  return { opt, cb }
 }
 
 function methodWrap (context, method, methods) {
@@ -140,9 +140,10 @@ function methodWrap (context, method, methods) {
 
 function requestHelpers (context, q, r) {
   ;['json', 'form'].forEach((type) => {
-    q[type] = (cb) => {
-      if (cb) return context[`${type}Body`](q, r, cb)
-      return (cb) => context[`${type}Body`](q, r, (data) => cb(null, data))
+    q[type] = (opt, cb) => {
+      const args = parseBodyArguments(opt, cb); opt = args.opt; cb = args.cb
+      if (typeof cb === 'function') return context[`${type}Body`](q, r, opt, cb)
+      return (cb) => context[`${type}Body`](q, r, opt, (data) => cb(null, data))
     }
   })
 }
