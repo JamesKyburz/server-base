@@ -1,6 +1,5 @@
 {
   "name": "server-base-monorepo",
-  "main": "index.js",
   "repository": {
     "type": "git",
     "url": "git://github.com/jameskyburz/server-base.git"
