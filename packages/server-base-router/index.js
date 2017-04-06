@@ -46,7 +46,10 @@ function create (name, routeDefinitions) {
     ;(function next () {
       const fn = (fns.shift() || done)
       if (isGenerator(fn)) {
-        runGenerator(fn, r.error)(q, r, next)
+        runGenerator(fn, (err) => {
+          context.log.error(err)
+          r.error(err)
+        })(q, r, next)
       } else {
         fn.call(context, q, r, next)
       }
