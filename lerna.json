@@ -1,7 +1,9 @@
 {
   "lerna": "2.0.0-beta.38",
   "command": {
-    "exact": true
+    "init": {
+      "exact": true
+    }
   },
   "packages": [
     "packages/*"
