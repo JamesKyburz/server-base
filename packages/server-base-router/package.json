@@ -1,6 +1,6 @@
 {
   "name": "server-base-router",
-  "version": "4.0.27",
+  "version": "4.0.28",
   "description": "server base router",
   "main": "index.js",
   "keywords": "http router server-base middleware",
@@ -21,7 +21,7 @@
     "is-generator-function": "1.0.6",
     "mime": "1.3.4",
     "run-duck-run": "2.0.0",
-    "server-base-log": "^4.0.27"
+    "server-base-log": "4.0.28"
   },
   "devDependencies": {
     "standard": "9.0.0"
