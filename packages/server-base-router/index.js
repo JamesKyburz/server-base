@@ -46,7 +46,9 @@ function create (name, routeDefinitions) {
     ;(function next () {
       const fn = (fns.shift() || done)
       if (isGenerator(fn)) {
-        runGenerator(fn, r.error)(q, r, next)
+        runGenerator(fn, (err) => {
+          if (err) r.error(err)
+        })(q, r, next)
       } else {
         fn.call(context, q, r, next)
       }
@@ -62,7 +64,9 @@ function create (name, routeDefinitions) {
         const fn = typeof match.handler === 'function'
         ? match.handler
         : methodWrap(context, q.method, match.handler)
-        const handler = isGenerator(fn) ? runGenerator(fn, r.error) : fn
+        const handler = isGenerator(fn) ? runGenerator(fn, (err) => {
+          if (err) r.error(err)
+        }) : fn
         return handler(q, r, match.params, match.splat)
       }
       context.notFound(q, r)
