@@ -1,6 +1,6 @@
 {
   "name": "server-base",
-  "version": "4.0.26",
+  "version": "4.0.27",
   "description": "server base",
   "main": "index.js",
   "keywords": "http server microservice docker",
@@ -17,8 +17,8 @@
   },
   "dependencies": {
     "dotenv": "4.0.0",
-    "server-base-router": "^4.0.26",
-    "server-base-log": "^4.0.26"
+    "server-base-router": "^4.0.27",
+    "server-base-log": "^4.0.27"
   },
   "devDependencies": {
     "standard": "9.0.0"
