@@ -1,5 +1,7 @@
 # server base
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/JamesKyburz/server-base.svg)](https://greenkeeper.io/)
+
 base for micro services or simple servers
 
 [![js-standard-style](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://github.com/feross/standard)
