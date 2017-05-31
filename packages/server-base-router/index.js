@@ -45,14 +45,19 @@ function create (name, routeDefinitions) {
     const fns = context.middlewareFunctions.slice()
     ;(function next () {
       const fn = (fns.shift() || done)
-      if (isGenerator(fn)) {
-        runGenerator(fn, (err) => {
-          if (err) r.error(err)
-        })(q, r, next)
-      } else {
-        fn.call(context, q, r, next)
-      }
+      callRoute(fn)(q, r, next)
     })()
+  }
+
+  function callRoute (fn) {
+    return function () {
+      const r = arguments[1]
+      const handler = isGenerator(fn) ? runGenerator(fn, (err) => {
+        if (err) r.error(err)
+      }) : fn
+      const result = handler.apply(context, arguments)
+      if (result && result.catch) result.catch(r.error)
+    }
   }
 
   function defaultRoute (q, r) {
@@ -64,10 +69,7 @@ function create (name, routeDefinitions) {
         const fn = typeof match.handler === 'function'
         ? match.handler
         : methodWrap(context, q.method, match.handler)
-        const handler = isGenerator(fn) ? runGenerator(fn, (err) => {
-          if (err) r.error(err)
-        }) : fn
-        return handler(q, r, match.params, match.splat)
+        return callRoute(fn)(q, r, match.params, match.splat)
       }
       context.notFound(q, r)
     })
