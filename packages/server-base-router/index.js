@@ -164,7 +164,7 @@ function requestHelpers (context, q, r) {
 function responseHelpers (context, q, r) {
   let errorCode
   let errorText
-  r.notFound = context.notFound.bind(context, q, r)
+  r.notFound = () => context.notFound(q, r)
   r.setNextErrorMessage = (err, code) => { errorText = err; errorCode = code }
   r.setNextErrorCode = (code) => { errorText = ''; errorCode = code }
   r.error = (err, code) => {
