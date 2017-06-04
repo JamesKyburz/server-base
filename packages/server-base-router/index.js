@@ -149,7 +149,9 @@ function requestHelpers (context, q, r) {
     q[type] = (opt, cb) => {
       const args = parseBodyArguments(opt, cb); opt = args.opt; cb = args.cb
       if (typeof cb === 'function') return context[`${type}Body`](q, r, opt, cb)
-      return (cb) => context[`${type}Body`](q, r, opt, (data) => cb(null, data))
+      return new Promise((resolve) => {
+        context[`${type}Body`](q, r, opt, (data) => resolve(data))
+      })
     }
   })
 }
