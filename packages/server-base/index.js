@@ -9,6 +9,10 @@ var started = {}
 module.exports = create
 
 function create (name, routes) {
+  if (typeof name === 'function') {
+    routes = name
+    name = require(`${process.cwd()}/package.json`).name
+  }
   var server
 
   var methods = {

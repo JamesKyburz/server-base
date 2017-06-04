@@ -14,6 +14,11 @@ mime.default_type = 'text/html'
 module.exports = create
 
 function create (name, routeDefinitions) {
+  if (typeof name === 'function') {
+    routeDefinitions = name
+    name = require(`${process.cwd()}/package.json`).name
+  }
+
   const context = {
     createLog: createLog,
     log: createLog(name),
