@@ -1,10 +1,10 @@
-var http = require('http')
-var log = require('./log')
-var dotenv = require('dotenv')
-var router = require('./router')
+const http = require('http')
+const log = require('./log')
+const dotenv = require('dotenv')
+const router = require('./router')
 dotenv.load()
 
-var started = {}
+const started = {}
 
 module.exports = create
 
@@ -13,9 +13,9 @@ function create (name, routes) {
     routes = name
     name = require(`${process.cwd()}/package.json`).name
   }
-  var server
+  let server
 
-  var methods = {
+  const methods = {
     start: start,
     config: config()
   }
@@ -47,7 +47,9 @@ function create (name, routes) {
 
   function assert (keys) {
     keys.forEach(function (key) {
-      if (typeof process.env[key] === 'undefined') throw new Error('process.env.' + key + ' is missing')
+      if (typeof process.env[key] === 'undefined') {
+        throw new Error(`process.env.${key} is missing`)
+      }
     })
     return methods
   }
