@@ -15,6 +15,10 @@ function create (name, routes) {
   }
   let server
 
+  process.nextTick(() => {
+    if (!server) start()
+  })
+
   const methods = {
     start: start,
     config: config()
