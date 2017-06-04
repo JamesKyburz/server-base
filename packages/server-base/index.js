@@ -23,7 +23,7 @@ function create (name, routes) {
   return methods
 
   function start (port) {
-    port = port || process.env.PORT
+    port = port || process.env.PORT || 0
     server = started[port]
     if (!server) {
       server = http.createServer()
