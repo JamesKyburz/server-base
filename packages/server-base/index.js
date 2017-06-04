@@ -9,7 +9,7 @@ const started = {}
 module.exports = create
 
 function create (name, routes) {
-  if (typeof name === 'function') {
+  if (typeof name === 'function' || typeof name === 'object') {
     routes = name
     name = require(`${process.cwd()}/package.json`).name
   }

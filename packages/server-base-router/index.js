@@ -14,7 +14,7 @@ mime.default_type = 'text/html'
 module.exports = create
 
 function create (name, routeDefinitions) {
-  if (typeof name === 'function') {
+  if (typeof name === 'function' || typeof name === 'object') {
     routeDefinitions = name
     name = require(`${process.cwd()}/package.json`).name
   }
@@ -37,7 +37,20 @@ function create (name, routeDefinitions) {
   function ping (q, r) { r.end(name) }
 
   use([logRequest, mimeTypes])
-  if (routeDefinitions) routeDefinitions.call(context, router, context)
+
+  if (routeDefinitions) {
+    if (typeof routeDefinitions === 'object') {
+      Object.keys(routeDefinitions).forEach((key) => {
+        if (key === '@setup') {
+          routeDefinitions[key](context)
+        } else {
+          router.set(key, routeDefinitions[key])
+        }
+      })
+    } else {
+      routeDefinitions.call(context, router, context)
+    }
+  }
 
   return defaultRoute
 
