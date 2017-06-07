@@ -42,11 +42,15 @@ server.listen(1234)
 
 The url extensions is used to determine the mime type used in the response.
 
-# process.env.MIME_TYPES
+# process.env.MIME_TYPES (string)
 
 Defines extra types using [mime](https://npm.im/mime)
 
-# `@setup context` methods
+# process.env.MIME_TYPES_PATH
+
+Defines extra types using [mime](https://npm.im/mime)
+
+## `@setup context` methods
 
 `createLog` is [server-base-log](https://npm.im/server-base-log) module for service
 
