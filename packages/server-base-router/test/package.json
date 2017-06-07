@@ -4,8 +4,9 @@
     "test": "LOG_LEVEL=error tape *.js | tap-spec"
   },
   "devDependencies": {
-    "tap-spec": "4.1.1",
+    "request": "2.81.0",
     "request-promise": "4.2.1",
+    "tap-spec": "4.1.1",
     "tape": "4.6.3",
     "test-listen-destroy": "1.0.0"
   },
