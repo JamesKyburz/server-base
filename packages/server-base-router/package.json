@@ -2,7 +2,7 @@
   "name": "server-base-router",
   "version": "4.4.0",
   "description": "server base router",
-  "main": "index.js",
+  "main": "src/index.js",
   "keywords": "http router server-base middleware",
   "repository": {
     "type": "git",
@@ -15,6 +15,9 @@
   "scripts": {
     "prepublish": "standard"
   },
+  "files": [
+    "src"
+  ],
   "dependencies": {
     "body": "5.1.0",
     "http-hash": "2.0.0",

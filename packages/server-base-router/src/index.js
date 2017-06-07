@@ -9,7 +9,9 @@ const runGenerator = require('run-duck-run')
 const MIME_TYPES = JSON.parse(process.env.MIME_TYPES || '{}')
 mime.define(MIME_TYPES)
 
-mime.default_type = 'text/html'
+if (process.env.MIME_TYPES_PATH) mime.load(process.env.MIME_TYPES_PATH)
+
+mime.default_type = process.env.MIME_DEFAULT || 'text/html'
 
 module.exports = create
 
@@ -122,7 +124,8 @@ function create (name, routeDefinitions) {
 
   function formBody (q, r, opt, cb) {
     const args = parseBodyArguments(opt, cb); opt = args.opt; cb = args.cb
-    form(q, { limit: opt.limit, encoding: opt.encoding }, (err, body) => {
+
+    form(q, { limit: opt.limit }, (err, body) => {
       if (err) return r.error(err)
       if (opt && opt.log) context.log.info('form request %s %j', q.url, body)
       try {
@@ -135,7 +138,7 @@ function create (name, routeDefinitions) {
 
   function jsonBody (q, r, opt, cb) {
     const args = parseBodyArguments(opt, cb); opt = args.opt; cb = args.cb
-    json(q, r, { limit: opt.limit, encoding: opt.encoding }, (err, payload) => {
+    json(q, r, { limit: opt.limit }, (err, payload) => {
       if (err) return r.error(err)
       if (opt && opt.log) context.log.info('json request %s %j', q.url, payload)
       try {
