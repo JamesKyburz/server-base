@@ -2,32 +2,28 @@
 
 base for micro services or simple servers
 
+[![js-standard-style](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://github.com/feross/standard)
+[![build status](https://api.travis-ci.org/JamesKyburz/server-base.svg)](https://travis-ci.org/JamesKyburz/server-base)
+[![downloads](https://img.shields.io/npm/dm/server-base.svg)](https://npmjs.org/package/server-base)
+
 ### usage
 
 ```
-var service = require('server-base')
-var name = require('./package.json').name
-service(name, (router, context) => {
-  router.set('/hello', (q, r) => r.end('world'))
+const service = require('server-base')
+service(({
+  '/hello': (req, res) => res.end('world')
 })
-.start(1234)
 ```
-
-Calling start with no arguments requires process.env.PORT to be set.
 
 ### router
 
-See [server-base-router](https://npm.im/server-base-router) for details.
+See [server-base-router](https://github.com/JamesKyburz/server-base/tree/master/packages/server-base-router) for details.
+
+See [server-base-router-tests](https://github.com/JamesKyburz/server-base/tree/master/packages/server-base-router/test) for details.
 
 ### logger
 
-See [server-base-log](https://npm.im/server-base-log) for details.
-
-### Docker
-
-Docker images hosted at https://hub.docker.com/r/jameskyburz/server-base/
-
-See [server-base-docker](https://github.com/JamesKyburz/server-base-docker) repository.
+See [server-base-log](https://github.com/JamesKyburz/server-base/tree/master/packages/server-base-log) for details.
 
 ### .env
 
