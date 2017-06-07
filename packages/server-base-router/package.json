@@ -13,7 +13,7 @@
     "email": "james.kyburz@gmail.com"
   },
   "scripts": {
-    "prepublish": "standard"
+    "prepublish": "standard && cd test && npm install && npm t"
   },
   "files": [
     "src"
