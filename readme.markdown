@@ -13,6 +13,7 @@ const service = require('server-base')
 service(({
   '/hello': (req, res) => res.end('world')
 })
+.start(5000)
 ```
 
 ### router
@@ -32,8 +33,6 @@ If a .env file exists it will load the values into process.env using [dotenv](ht
 ```dosini
 PORT=1900
 ```
-
-[![js-standard-style](https://cdn.rawgit.com/feross/standard/master/badge.svg)](https://github.com/feross/standard)
 
 # install
 
