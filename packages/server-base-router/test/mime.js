@@ -14,7 +14,7 @@ const request = require('request-promise')
 
 const getUrl = (fn) => listen(router(fn))
 
-test('*.txt returns test/plain', async (t) => {
+test('*.txt returns text/plain', async (t) => {
   t.plan(1)
   const fn = {
     '/test.txt': (req, res) => res.text('test')
