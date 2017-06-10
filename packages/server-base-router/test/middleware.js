@@ -20,6 +20,21 @@ test('@setup middleware prevents request', async (t) => {
   }
 })
 
+test('@setup middleware gets context and router', async (t) => {
+  t.plan(1)
+  const fn = {
+    '@setup': (ctx, router) => {
+      ctx.use((req, res, next) => {
+        if (router.get(req.url).handler) return next()
+        res.text('default')
+      })
+    }
+  }
+  const url = await getUrl(fn)
+  const body = await request(url)
+  t.deepEqual(body, 'default', '@setup handler returned default response')
+})
+
 test('.use middleware prevents request', async (t) => {
   t.plan(1)
   const fn = (router, ctx) => {
