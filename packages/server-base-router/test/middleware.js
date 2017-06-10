@@ -47,3 +47,39 @@ test('.use middleware prevents request', async (t) => {
     t.deepEqual(err.message, '500 - "no"', 'error message set')
   }
 })
+
+test('middleware can be a async function', async (t) => {
+  t.plan(1)
+  const fn = (router, ctx) => {
+    ctx.use(async (req, res, next) => res.text('ok'))
+  }
+  const url = await getUrl(fn)
+  const body = await request(url)
+  t.deepEqual(body, 'ok', 'ok response')
+})
+
+test('middleware can be a generator', async (t) => {
+  t.plan(1)
+  const fn = (router, ctx) => {
+    ctx.use(function * (req, res, next) { res.text('ok') })
+  }
+  const url = await getUrl(fn)
+  const body = await request(url)
+  t.deepEqual(body, 'ok', 'ok response')
+})
+
+test('ctx.use can take an array', async (t) => {
+  t.plan(2)
+  const fn = {
+    '@setup': (ctx) => {
+      ctx.use([
+        (req, res, next) => { res.setHeader('x-custom', 'yes'); next() },
+        (req, res, next) => res.text('ok')
+      ])
+    }
+  }
+  const url = await getUrl(fn)
+  const res = await request(url + '/test.js', { resolveWithFullResponse: true })
+  t.deepEqual(res.headers['x-custom'], 'yes', 'middleware header set')
+  t.deepEqual(res.body, 'ok', 'ok response')
+})
