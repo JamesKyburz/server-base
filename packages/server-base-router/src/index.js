@@ -44,7 +44,7 @@ function create (name, routeDefinitions) {
     if (typeof routeDefinitions === 'object') {
       Object.keys(routeDefinitions).forEach((key) => {
         if (key === '@setup') {
-          routeDefinitions[key](context)
+          routeDefinitions[key](context, router)
         } else {
           router.set(key, routeDefinitions[key])
         }
