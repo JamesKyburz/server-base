@@ -2,7 +2,7 @@
   "name": "server-base",
   "version": "4.5.0",
   "description": "server base",
-  "main": "index.js",
+  "main": "src/index.js",
   "keywords": "http server microservice docker",
   "repository": {
     "type": "git",
@@ -12,16 +12,13 @@
     "name": "James Kyburz",
     "email": "james.kyburz@gmail.com"
   },
-  "scripts": {
-    "prepublish": "standard"
-  },
+  "files": [
+    "src"
+  ],
   "dependencies": {
     "dotenv": "4.0.0",
     "server-base-router": "4.5.0",
     "server-base-log": "4.5.0"
-  },
-  "devDependencies": {
-    "standard": "9.0.0"
   },
   "license": "MIT"
 }
