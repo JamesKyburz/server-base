@@ -8,6 +8,9 @@ const started = {}
 
 module.exports = create
 
+create.log = log
+create.router = router
+
 function create (name, routes) {
   if (typeof name === 'function' || typeof name === 'object') {
     routes = name
