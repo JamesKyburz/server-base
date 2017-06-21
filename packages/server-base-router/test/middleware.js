@@ -59,28 +59,36 @@ test('@setup middleware generator function', async (t) => {
   t.deepEqual(body, 'ok', 'ok response')
 })
 
-test.skip('failing @setup middleware async function', async (t) => {
+test('failing @setup middleware async function', async (t) => {
   t.plan(1)
   const fn = {
     '@setup': async (ctx, router) => {
       return Promise.reject(new Error('oh no'))
     }
   }
+  const exit = process.exit
+  process.exit = () => {
+    process.exit = exit
+    t.ok('process.exit(1) called after crash')
+  }
   const url = await getUrl(fn)
-  const res = await request(url + '/ping', { resolveWithFullResponse: true })
-  t.deepEqual(res.statusCode, 500, '@setup failed')
+  await request(url)
 })
 
-test.skip('failing @setup middleware generator function', async (t) => {
+test('failing @setup middleware generator function', async (t) => {
   t.plan(1)
   const fn = {
     '@setup': function * (ctx, router) {
       yield (cb) => cb(new Error('oh no'))
     }
   }
+  const exit = process.exit
+  process.exit = () => {
+    process.exit = exit
+    t.ok('process.exit(1) called after crash')
+  }
   const url = await getUrl(fn)
-  const res = await request(url + '/ping', { resolveWithFullResponse: true })
-  t.deepEqual(res.statusCode, 500, '@setup failed')
+  await request(url)
 })
 
 test('.use middleware prevents request', async (t) => {

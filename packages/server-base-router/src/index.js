@@ -72,7 +72,7 @@ function create (name, routeDefinitions) {
   function callSetup (fn) {
     const bail = (err) => {
       context.log.error(err)
-      context.use((q, r) => r.error('middleware setup failed', 500))
+      process.nextTick(() => process.exit(1))
     }
     const handler = isGenerator(fn) ? runGenerator(fn, (err) => {
       if (err) bail(err)
