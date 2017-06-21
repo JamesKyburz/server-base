@@ -27,6 +27,11 @@ function create (name, routes) {
     config: config()
   }
 
+  const shutdown = () => {
+    if (server) server.close()
+    process.exit(0)
+  }
+
   return methods
 
   function start (port) {
@@ -36,6 +41,8 @@ function create (name, routes) {
       server = http.createServer()
       server.listen(port, running)
       started[port] = server
+      process.on('SIGINT', shutdown)
+      process.on('SIGTERM', shutdown)
     }
     addRoutes()
     return server
