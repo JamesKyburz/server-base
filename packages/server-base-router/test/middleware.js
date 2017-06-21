@@ -35,6 +35,54 @@ test('@setup middleware gets context and router', async (t) => {
   t.deepEqual(body, 'default', '@setup handler returned default response')
 })
 
+test('@setup middleware async function', async (t) => {
+  t.plan(1)
+  const fn = {
+    '@setup': async (ctx, router) => {
+      ctx.use((req, res, next) => res.text('ok'))
+    }
+  }
+  const url = await getUrl(fn)
+  const body = await request(url)
+  t.deepEqual(body, 'ok', 'ok response')
+})
+
+test('@setup middleware generator function', async (t) => {
+  t.plan(1)
+  const fn = {
+    '@setup': function * (ctx, router) {
+      ctx.use((req, res, next) => res.text('ok'))
+    }
+  }
+  const url = await getUrl(fn)
+  const body = await request(url)
+  t.deepEqual(body, 'ok', 'ok response')
+})
+
+test.skip('failing @setup middleware async function', async (t) => {
+  t.plan(1)
+  const fn = {
+    '@setup': async (ctx, router) => {
+      return Promise.reject(new Error('oh no'))
+    }
+  }
+  const url = await getUrl(fn)
+  const res = await request(url + '/ping', { resolveWithFullResponse: true })
+  t.deepEqual(res.statusCode, 500, '@setup failed')
+})
+
+test.skip('failing @setup middleware generator function', async (t) => {
+  t.plan(1)
+  const fn = {
+    '@setup': function * (ctx, router) {
+      yield (cb) => cb(new Error('oh no'))
+    }
+  }
+  const url = await getUrl(fn)
+  const res = await request(url + '/ping', { resolveWithFullResponse: true })
+  t.deepEqual(res.statusCode, 500, '@setup failed')
+})
+
 test('.use middleware prevents request', async (t) => {
   t.plan(1)
   const fn = (router, ctx) => {

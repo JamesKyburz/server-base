@@ -44,7 +44,7 @@ function create (name, routeDefinitions) {
     if (typeof routeDefinitions === 'object') {
       Object.keys(routeDefinitions).forEach((key) => {
         if (key === '@setup') {
-          routeDefinitions[key](context, router)
+          callSetup(routeDefinitions[key])
         } else {
           router.set(key, routeDefinitions[key])
         }
@@ -67,6 +67,20 @@ function create (name, routeDefinitions) {
       const fn = (fns.shift() || done)
       callRoute(fn)(q, r, next)
     })()
+  }
+
+  function callSetup (fn) {
+    const bail = (err) => {
+      context.log.error(err)
+      context.use((q, r) => r.error('middleware setup failed', 500))
+    }
+    const handler = isGenerator(fn) ? runGenerator(fn, (err) => {
+      if (err) bail(err)
+    }) : fn
+    const result = handler.call(context, context, router)
+    if (result && result.catch) {
+      result.catch(bail)
+    }
   }
 
   function callRoute (fn) {
