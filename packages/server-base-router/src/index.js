@@ -198,9 +198,10 @@ function responseHelpers (context, q, r) {
   r.setNextErrorMessage = (err, code) => { errorText = err; errorCode = code }
   r.setNextErrorCode = (code) => { errorText = ''; errorCode = code }
   r.error = (err, code) => {
-    code = code || err.statusCode
-    if (errorText) context.log.child({ req: q }).error(err)
-    context.errorReply(q, r, errorText || err, errorCode || code || 500)
+    if (errorText && err) context.log.child({ req: q }).error(err)
+    const replyCode = errorCode || code || (err && err.statusCode ? err.statusCode : 500)
+    const replyText = errorText || err
+    context.errorReply(q, r, replyText, replyCode)
   }
   r.json = (json) => r.end(JSON.stringify(json))
   r.text = r.end.bind(r)
