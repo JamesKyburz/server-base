@@ -9,6 +9,7 @@ process.env.MIME_DEFAULT = 'text/plain'
 const listen = require('test-listen-destroy')
 const test = require('tape')
 const router = require('../')
+const mime = require('mime')
 
 const request = require('request-promise')
 
@@ -75,4 +76,20 @@ test('load mime types file', async (t) => {
   const url = await getUrl(fn)
   const res = await request(url + '/test.gltf', { resolveWithFullResponse: true })
   t.deepEqual(res.headers['content-type'], 'model/gltf+json', 'correct content-type')
+})
+
+test('mime types lookup only uses extension', async (t) => {
+  t.plan(1)
+  const fn = {
+    '@setup': ({ mime }) => {
+      mime.define({ 'custom/mime2; charset=UTF-8': ['x'] })
+    },
+    '/application': (req, res) => res.text('')
+  }
+  const url = await getUrl(fn)
+  const res = await request(url + '/application', { resolveWithFullResponse: true })
+  let expectedMimetype = process.env.MIME_DEFAULT
+  const charset = mime.charsets.lookup(process.env.MIME_DEFAULT)
+  if (charset) expectedMimetype += '; charset=' + charset
+  t.deepEqual(res.headers['content-type'], expectedMimetype, 'content-type is set to default mime type')
 })
