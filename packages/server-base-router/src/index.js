@@ -1,4 +1,5 @@
 const mime = require('mime')
+const path = require('path')
 const routes = require('http-hash')
 const json = require('body/json')
 const form = require('body/form')
@@ -110,7 +111,7 @@ function create (name, routeDefinitions) {
   }
 
   function mimeTypes (q, r, next) {
-    let contentType = context.mime.lookup(q.url)
+    let contentType = context.mime.lookup(path.extname(q.url))
     const charset = context.mime.charsets.lookup(contentType)
     if (charset) contentType += '; charset=' + charset
     r.setHeader('Content-Type', contentType)
