@@ -8,14 +8,6 @@
     "name": "James Kyburz",
     "email": "james.kyburz@gmail.com"
   },
-  "scripts": {
-    "publish:all": "npx standard && lerna publish --exact --force-publish=\"*\"",
-    "test": "lerna exec npm install && lerna run test",
-    "prepublish:all": "npm run test"
-  },
-  "devDependencies": {
-    "lerna": "3.0.0-beta.13"
-  },
   "license": "MIT",
   "private": true
 }
