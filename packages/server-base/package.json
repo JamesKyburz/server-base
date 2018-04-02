@@ -1,6 +1,6 @@
 {
   "name": "server-base",
-  "version": "5.0.2",
+  "version": "5.0.3",
   "description": "server base",
   "main": "src/index.js",
   "keywords": "http server microservice docker",
@@ -17,8 +17,8 @@
   ],
   "dependencies": {
     "dotenv": "4.0.0",
-    "server-base-log": "5.0.2",
-    "server-base-router": "5.0.2"
+    "server-base-log": "5.0.3",
+    "server-base-router": "5.0.3"
   },
   "license": "MIT"
 }
