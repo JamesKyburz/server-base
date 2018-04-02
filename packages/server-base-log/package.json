@@ -1,6 +1,6 @@
 {
   "name": "server-base-log",
-  "version": "5.0.3",
+  "version": "5.0.4",
   "description": "server base log wrapper using pino",
   "main": "src/index.js",
   "keywords": "log server-base logging pino http",
