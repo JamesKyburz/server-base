@@ -8,5 +8,6 @@
     "name": "James Kyburz",
     "email": "james.kyburz@gmail.com"
   },
+  "license": "Apache-2.0",
   "private": true
 }
