@@ -9,10 +9,23 @@ base for micro services or simple servers
 
 ### usage
 
-```
+```javascript
 const service = require('server-base')
-service(({
-  '/hello': (req, res) => res.end('world')
+service({
+  '@setup': (ctx, router) => {
+    ctx.use([
+      (req, res, next) => next()
+    ])
+  },
+  '/graphql': {
+    get (req, res) {
+      res.end('html')
+    },
+    async post (req, res) {
+      const query = await req.json()
+      res.json({})
+    }
+  }
 })
 .start(5000)
 ```
