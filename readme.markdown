@@ -57,4 +57,4 @@ npm install server-base
 ```
 
 # license
-[Apache License, Version 2.0](packages/server-base/LICENSE)
+[Apache License, Version 2.0](LICENSE)
