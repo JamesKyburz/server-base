@@ -20,5 +20,5 @@
     "server-base-log": "5.0.5",
     "server-base-router": "5.0.5"
   },
-  "license": "MIT"
+  "license": "Apache-2.0"
 }

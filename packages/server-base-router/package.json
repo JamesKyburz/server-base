@@ -26,5 +26,5 @@
     "run-duck-run": "2.0.3",
     "server-base-log": "5.0.5"
   },
-  "license": "MIT"
+  "license": "Apache-2.0"
 }

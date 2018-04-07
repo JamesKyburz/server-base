@@ -52,4 +52,4 @@ npm install server-base-log
 
 # license
 
-MIT
+[Apache License, Version 2.0](LICENSE)

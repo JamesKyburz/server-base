@@ -97,4 +97,4 @@ npm install server-base-router
 
 # license
 
-MIT
+[Apache License, Version 2.0](LICENSE)
