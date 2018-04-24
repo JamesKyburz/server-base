@@ -91,3 +91,26 @@ test('limit for form', async (t) => {
     t.equal(res.error, 'request entity too large', 'too large error')
   }
 })
+
+test('test handled error in generator', async (t) => {
+  t.plan(1)
+  const fn = {
+    '/*': {
+      * get (req, res) {
+        try {
+          yield Promise.reject(new Error('error'))
+        } catch (e) {
+        }
+        res.end('ok')
+      }
+    }
+  }
+  const url = await getUrl(fn)
+
+  try {
+    const res = await request(url + '/')
+    t.deepEqual(res, 'ok', '/ returned ok')
+  } catch (err) {
+    t.fail(err)
+  }
+})
