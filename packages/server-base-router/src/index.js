@@ -37,13 +37,15 @@ function create (name, routeDefinitions) {
   const router = routes()
 
   router.set('/ping', ping)
-  function ping (q, r) { r.end(name) }
+  function ping (q, r) {
+    r.end(name)
+  }
 
   use([logRequest, mimeTypes])
 
   if (routeDefinitions) {
     if (typeof routeDefinitions === 'object') {
-      Object.keys(routeDefinitions).forEach((key) => {
+      Object.keys(routeDefinitions).forEach(key => {
         if (key === '@setup') {
           callSetup(routeDefinitions[key])
         } else {
@@ -64,20 +66,23 @@ function create (name, routeDefinitions) {
 
   function applyMiddleware (q, r, done) {
     const fns = context.middlewareFunctions.slice()
-    ;(function next () {
-      const fn = (fns.shift() || done)
+    ;(function next (err) {
+      if (err) return r.error(err)
+      const fn = fns.shift() || done
       callRoute(fn)(q, r, next)
     })()
   }
 
   function callSetup (fn) {
-    const bail = (err) => {
+    const bail = err => {
       context.log.error(err)
       process.nextTick(() => process.exit(1))
     }
-    const handler = isGenerator(fn) ? runGenerator(fn, (err) => {
-      if (err) bail(err)
-    }) : fn
+    const handler = isGenerator(fn)
+      ? runGenerator(fn, err => {
+        if (err) bail(err)
+      })
+      : fn
     const result = handler.call(context, context, router)
     if (result && result.catch) {
       result.catch(bail)
@@ -87,9 +92,11 @@ function create (name, routeDefinitions) {
   function callRoute (fn) {
     return function () {
       const r = arguments[1]
-      const handler = isGenerator(fn) ? runGenerator(fn, (err) => {
-        if (err) r.error(err)
-      }) : fn
+      const handler = isGenerator(fn)
+        ? runGenerator(fn, err => {
+          if (err) r.error(err)
+        })
+        : fn
       const result = handler.apply(context, arguments)
       if (result && result.catch) result.catch(r.error)
     }
@@ -101,9 +108,10 @@ function create (name, routeDefinitions) {
     applyMiddleware(q, r, function () {
       const match = router.get(q.url)
       if (match.handler) {
-        const fn = typeof match.handler === 'function'
-        ? match.handler
-        : methodWrap(context, q.method, match.handler)
+        const fn =
+          typeof match.handler === 'function'
+            ? match.handler
+            : methodWrap(context, q.method, match.handler)
         return callRoute(fn)(q, r, match.params, match.splat)
       }
       context.notFound(q, r)
@@ -138,7 +146,9 @@ function create (name, routeDefinitions) {
   }
 
   function formBody (q, r, opt, cb) {
-    const args = parseBodyArguments(opt, cb); opt = args.opt; cb = args.cb
+    const args = parseBodyArguments(opt, cb)
+    opt = args.opt
+    cb = args.cb
 
     form(q, { limit: opt.limit }, (err, body) => {
       if (err) return r.error(err)
@@ -152,7 +162,9 @@ function create (name, routeDefinitions) {
   }
 
   function jsonBody (q, r, opt, cb) {
-    const args = parseBodyArguments(opt, cb); opt = args.opt; cb = args.cb
+    const args = parseBodyArguments(opt, cb)
+    opt = args.opt
+    cb = args.cb
     json(q, r, { limit: opt.limit }, (err, payload) => {
       if (err) return r.error(err)
       if (opt && opt.log) context.log.info('json request %s %j', q.url, payload)
@@ -176,17 +188,21 @@ function parseBodyArguments (opt, cb) {
 
 function methodWrap (context, method, methods) {
   method = method.toLowerCase()
-  return methods[method] ||
+  return (
+    methods[method] ||
     ((q, r) => r.error(`method ${method} not allowed for ${q.url}`, 405))
+  )
 }
 
 function requestHelpers (context, q, r) {
-  ;['json', 'form'].forEach((type) => {
+  ;['json', 'form'].forEach(type => {
     q[type] = (opt, cb) => {
-      const args = parseBodyArguments(opt, cb); opt = args.opt; cb = args.cb
+      const args = parseBodyArguments(opt, cb)
+      opt = args.opt
+      cb = args.cb
       if (typeof cb === 'function') return context[`${type}Body`](q, r, opt, cb)
-      return new Promise((resolve) => {
-        context[`${type}Body`](q, r, opt, (data) => resolve(data))
+      return new Promise(resolve => {
+        context[`${type}Body`](q, r, opt, data => resolve(data))
       })
     }
   })
@@ -196,14 +212,21 @@ function responseHelpers (context, q, r) {
   let errorCode
   let errorText
   r.notFound = () => context.notFound(q, r)
-  r.setNextErrorMessage = (err, code) => { errorText = err; errorCode = code }
-  r.setNextErrorCode = (code) => { errorText = ''; errorCode = code }
+  r.setNextErrorMessage = (err, code) => {
+    errorText = err
+    errorCode = code
+  }
+  r.setNextErrorCode = code => {
+    errorText = ''
+    errorCode = code
+  }
   r.error = (err, code) => {
     if (errorText && err) context.log.child({ req: q }).error(err)
-    const replyCode = errorCode || code || (err && err.statusCode ? err.statusCode : 500)
+    const replyCode =
+      errorCode || code || (err && err.statusCode ? err.statusCode : 500)
     const replyText = errorText || err
     context.errorReply(q, r, replyText, replyCode)
   }
-  r.json = (json) => r.end(JSON.stringify(json))
+  r.json = json => r.end(JSON.stringify(json))
   r.text = r.end.bind(r)
 }

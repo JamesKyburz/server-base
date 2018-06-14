@@ -139,3 +139,21 @@ test('ctx.use can take an array', async (t) => {
   t.deepEqual(res.headers['x-custom'], 'yes', 'middleware header set')
   t.deepEqual(res.body, 'ok', 'ok response')
 })
+
+test('middleware calling next with error doesn\'t continue', async (t) => {
+  t.plan(1)
+  const fn = (router, ctx) => {
+    ctx.use([
+      (req, res, next) => {
+        next(new Error('failed'))
+      },
+      (req, res) => res.end('ok')
+    ])
+  }
+  const url = await getUrl(fn)
+  try {
+    await request(url)
+  } catch (err) {
+    t.deepEqual(err.message, '500 - "failed"', 'error message set')
+  }
+})
