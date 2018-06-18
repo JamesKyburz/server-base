@@ -22,16 +22,21 @@ function create (name, routeDefinitions) {
     name = require(`${process.cwd()}/package.json`).name
   }
 
+  let internalErrorMessage = 'Internal system error'
+
   const context = {
-    createLog: createLog,
+    createLog,
     log: createLog(name),
-    mime: mime,
-    notFound: notFound,
-    jsonBody: jsonBody,
-    formBody: formBody,
-    errorReply: errorReply,
-    use: use,
-    middlewareFunctions: []
+    mime,
+    notFound,
+    jsonBody,
+    formBody,
+    errorReply,
+    use,
+    middlewareFunctions: [],
+    setInternalErrorMessage (message) {
+      internalErrorMessage = message
+    }
   }
 
   const router = routes()
@@ -92,13 +97,21 @@ function create (name, routeDefinitions) {
   function callRoute (fn) {
     return function () {
       const r = arguments[1]
+      const error = err => {
+        context.log.error(err)
+        r.error(internalErrorMessage)
+      }
       const handler = isGenerator(fn)
         ? runGenerator(fn, err => {
-          if (err) r.error(err)
+          if (err) error(err)
         })
         : fn
-      const result = handler.apply(context, arguments)
-      if (result && result.catch) result.catch(r.error)
+      try {
+        const result = handler.apply(context, arguments)
+        if (result && result.catch) result.catch(error)
+      } catch (err) {
+        error(err)
+      }
     }
   }
 

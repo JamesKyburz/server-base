@@ -3,9 +3,9 @@ const test = require('tape')
 const router = require('../')
 const request = require('request-promise')
 
-const getUrl = (fn) => listen(router(fn))
+const getUrl = fn => listen(router(fn))
 
-test('setNextErrorMessage', async (t) => {
+test('setNextErrorMessage', async t => {
   t.plan(2)
   const fn = {
     '/*': {
@@ -25,7 +25,7 @@ test('setNextErrorMessage', async (t) => {
   }
 })
 
-test('setNextErrorCode', async (t) => {
+test('setNextErrorCode', async t => {
   t.plan(2)
   const fn = {
     '/*': {
@@ -45,7 +45,7 @@ test('setNextErrorCode', async (t) => {
   }
 })
 
-test('limit for json', async (t) => {
+test('limit for json', async t => {
   t.plan(2)
   const fn = {
     '/*': {
@@ -69,7 +69,7 @@ test('limit for json', async (t) => {
   }
 })
 
-test('limit for form', async (t) => {
+test('limit for form', async t => {
   t.plan(2)
   const fn = {
     '/*': {
@@ -92,15 +92,14 @@ test('limit for form', async (t) => {
   }
 })
 
-test('test handled error in generator', async (t) => {
+test('test handled error in generator', async t => {
   t.plan(1)
   const fn = {
     '/*': {
       * get (req, res) {
         try {
           yield Promise.reject(new Error('error'))
-        } catch (e) {
-        }
+        } catch (e) {}
         res.end('ok')
       }
     }
@@ -112,5 +111,136 @@ test('test handled error in generator', async (t) => {
     t.deepEqual(res, 'ok', '/ returned ok')
   } catch (err) {
     t.fail(err)
+  }
+})
+
+test('internal system errors, handle async error in generator', async t => {
+  t.plan(2)
+  const fn = {
+    '/*': {
+      * get (req, res) {
+        yield Promise.reject(new Error('secret stacktrace'))
+      }
+    }
+  }
+  try {
+    const url = await getUrl(fn)
+    await request(url + '/')
+  } catch (res) {
+    t.equal(res.statusCode, 500, '500 status code')
+    t.equal(res.error, 'Internal system error')
+  }
+})
+
+test('internal system errors, handle async error in generator when setNextErrorMessage is set', async t => {
+  t.plan(2)
+  const fn = {
+    '/*': {
+      * get (req, res) {
+        res.setNextErrorMessage('override error', 400)
+        yield Promise.reject(new Error('secret stacktrace'))
+      }
+    }
+  }
+  try {
+    const url = await getUrl(fn)
+    await request(url + '/')
+  } catch (res) {
+    t.equal(res.statusCode, 400, '400 status code')
+    t.equal(res.error, 'override error')
+  }
+})
+
+test('internal system errors, handle async error in async function', async t => {
+  t.plan(2)
+  const fn = {
+    '/*': {
+      async get (req, res) {
+        await Promise.reject(new Error('secret stacktrace'))
+      }
+    }
+  }
+  try {
+    const url = await getUrl(fn)
+    await request(url + '/')
+  } catch (res) {
+    t.equal(res.statusCode, 500, '500 status code')
+    t.equal(res.error, 'Internal system error')
+  }
+})
+
+test('internal system errors, handle async error in async function when setNextErrorMessage is set', async t => {
+  t.plan(2)
+  const fn = {
+    '/*': {
+      async get (req, res) {
+        res.setNextErrorMessage('override error', 400)
+        await Promise.reject(new Error('secret stacktrace'))
+      }
+    }
+  }
+  try {
+    const url = await getUrl(fn)
+    await request(url + '/')
+  } catch (res) {
+    t.equal(res.statusCode, 400, '400 status code')
+    t.equal(res.error, 'override error')
+  }
+})
+
+test('internal system errors, handle sync error in async function', async t => {
+  t.plan(2)
+  const fn = {
+    '/*': {
+      async get (req, res) {
+        const n = null
+        n()
+      }
+    }
+  }
+  try {
+    const url = await getUrl(fn)
+    await request(url + '/')
+  } catch (res) {
+    t.equal(res.statusCode, 500, '500 status code')
+    t.equal(res.error, 'Internal system error')
+  }
+})
+
+test('internal system errors, handle sync error in generator function', async t => {
+  t.plan(2)
+  const fn = {
+    '/*': {
+      * get (req, res) {
+        const n = null
+        n()
+      }
+    }
+  }
+  try {
+    const url = await getUrl(fn)
+    await request(url + '/')
+  } catch (res) {
+    t.equal(res.statusCode, 500, '500 status code')
+    t.equal(res.error, 'Internal system error')
+  }
+})
+
+test('internal system errors, handle sync error in a sync function', async t => {
+  t.plan(2)
+  const fn = {
+    '/*': {
+      get (req, res) {
+        const n = null
+        n()
+      }
+    }
+  }
+  try {
+    const url = await getUrl(fn)
+    await request(url + '/')
+  } catch (res) {
+    t.equal(res.statusCode, 500, '500 status code')
+    t.equal(res.error, 'Internal system error')
   }
 })
