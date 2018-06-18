@@ -1,6 +1,6 @@
 {
   "name": "server-base",
-  "version": "5.0.8",
+  "version": "5.0.9",
   "description": "server base",
   "main": "src/index.js",
   "keywords": "http server microservice docker",
@@ -17,8 +17,8 @@
   ],
   "dependencies": {
     "dotenv": "4.0.0",
-    "server-base-log": "5.0.8",
-    "server-base-router": "5.0.8"
+    "server-base-log": "5.0.9",
+    "server-base-router": "5.0.9"
   },
   "license": "Apache-2.0"
 }
