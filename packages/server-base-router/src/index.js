@@ -6,11 +6,21 @@ const form = require('body/form')
 const createLog = require('server-base-log')
 const isGenerator = require('is-generator-function')
 const runGenerator = require('run-duck-run')
+const fs = require('fs')
 
-const MIME_TYPES = JSON.parse(process.env.MIME_TYPES || '{}')
-mime.define(MIME_TYPES)
+if (process.env.MIME_TYPES) {
+  mime.define(JSON.parse(process.env.MIME_TYPES), { force: true })
+}
 
-if (process.env.MIME_TYPES_PATH) mime.load(process.env.MIME_TYPES_PATH)
+if (process.env.MIME_TYPES_PATH) {
+  for (const line of fs
+    .readFileSync(process.env.MIME_TYPES_PATH, 'ascii')
+    .split(/[\r\n]+/)) {
+    const fields = line.replace(/\s*#.*|^\s*|\s*$/g, '').split(/\s+/)
+    const [ key, types ] = [fields.shift(), fields]
+    if (key) mime.define({ [key]: types })
+  }
+}
 
 mime.default_type = process.env.MIME_DEFAULT || 'text/html'
 
@@ -132,9 +142,11 @@ function create (name, routeDefinitions) {
   }
 
   function mimeTypes (q, r, next) {
-    let contentType = context.mime.lookup(path.extname(q.url))
-    const charset = context.mime.charsets.lookup(contentType)
-    if (charset) contentType += '; charset=' + charset
+    let contentType =
+      context.mime.getType(path.extname(q.url)) || context.mime.default_type
+    if (contentType === 'text/plain' || contentType === 'text/html') {
+      contentType += '; charset=UTF-8'
+    }
     r.setHeader('Content-Type', contentType)
     next()
   }
