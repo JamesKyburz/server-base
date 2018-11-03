@@ -19,16 +19,12 @@ function createLog (name, opt) {
       level: level
     }, opt)
 
-    const pretty = process.env.LOG_PRETTY
-      ? pino.pretty(opt.pretty)
-      : undefined
-
-    if (pretty) {
-      pretty.pipe(process.stdout)
-      pretty.on('error', reportError)
+    if (process.env.LOG_PRETTY) {
+      opt.prettyPrint = opt.prettyPrint || true
+      opt.prettier = require('pino-pretty')
     }
 
-    log = pino(opt, pretty)
+    log = pino(opt)
     log.on('error', reportError)
   }
 
