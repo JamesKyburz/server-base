@@ -8,5 +8,8 @@
     "name": "James Kyburz",
     "email": "james.kyburz@gmail.com"
   },
+  "scripts": {
+    "test": "npx macleod exec npm i && npx macleod exec npm t"
+  },
   "private": true
 }

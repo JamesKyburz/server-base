@@ -11,5 +11,6 @@
     "tape": "4.9.1",
     "test-listen-destroy": "1.0.0"
   },
+  "private": true,
   "dependencies": {}
 }

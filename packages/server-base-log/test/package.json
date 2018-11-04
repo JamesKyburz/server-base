@@ -1,0 +1,11 @@
+{
+  "name": "test-server-base-logger",
+  "scripts": {
+    "test": "tap *.js"
+  },
+  "devDependencies": {
+    "tap": "12.0.1"
+  },
+  "private": true,
+  "dependencies": {}
+}

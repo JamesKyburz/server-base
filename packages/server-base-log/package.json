@@ -12,6 +12,9 @@
     "name": "James Kyburz",
     "email": "james.kyburz@gmail.com"
   },
+  "scripts": {
+    "test": "cd test && npm install && npm t"
+  },
   "files": [
     "src"
   ],
