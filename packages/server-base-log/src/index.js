@@ -20,7 +20,7 @@ function createLog (name, opt) {
     }, opt)
 
     if (process.env.LOG_PRETTY) {
-      opt.prettyPrint = opt.prettyPrint || true
+      opt.prettyPrint = opt.prettyPrint || { translateTime: true }
       opt.prettier = require('pino-pretty')
     }
 
