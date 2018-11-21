@@ -3,7 +3,7 @@
 simple wrapper for [pino](https://npm.im/pino) used by [server-base](https://npm.im/server-base)
 
 [![js-standard-style](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://github.com/feross/standard)
-[![build status](https://api.travis-ci.org/JamesKyburz/server-base-log.svg)](https://travis-ci.org/JamesKyburz/server-base-log)
+[![build status](https://api.travis-ci.org/JamesKyburz/server-base.svg)](https://travis-ci.org/JamesKyburz/server-base)
 [![downloads](https://img.shields.io/npm/dm/server-base-log.svg)](https://npmjs.org/package/server-base-log)
 
 # usage
