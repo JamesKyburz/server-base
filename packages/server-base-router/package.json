@@ -20,7 +20,7 @@
   ],
   "dependencies": {
     "body": "5.1.0",
-    "http-hash": "2.0.0",
+    "http-hash": "2.0.1",
     "is-generator-function": "1.0.7",
     "mime": "2.4.0",
     "run-duck-run": "2.1.1",
