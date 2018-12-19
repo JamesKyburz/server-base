@@ -109,7 +109,7 @@ function create (name, routeDefinitions) {
       const r = arguments[1]
       const error = err => {
         context.log.error(err)
-        r.error(internalErrorMessage)
+        r.error(internalErrorMessage, err.statusCode)
       }
       const handler = isGenerator(fn)
         ? runGenerator(fn, err => {

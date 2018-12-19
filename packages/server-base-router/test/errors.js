@@ -244,3 +244,78 @@ test('internal system errors, handle sync error in a sync function', async t => 
     t.equal(res.error, 'Internal system error')
   }
 })
+
+test('internal system error preserves statusCode for promises', async t => {
+  t.plan(2)
+  class CustomError extends Error {
+    constructor (code) {
+      super('secret stacktrace')
+      this.statusCode = code
+      Error.captureStackTrace(this, CustomError)
+    }
+  }
+  const fn = {
+    '/*': {
+      async get (req, res) {
+        return Promise.reject(new CustomError(404))
+      }
+    }
+  }
+  try {
+    const url = await getUrl(fn)
+    await request(url + '/')
+  } catch (res) {
+    t.equal(res.statusCode, 404, '404 status code')
+    t.equal(res.error, 'Internal system error')
+  }
+})
+
+test('internal system error preserves statusCode for generators', async t => {
+  t.plan(2)
+  class CustomError extends Error {
+    constructor (code) {
+      super('secret stacktrace')
+      this.statusCode = code
+      Error.captureStackTrace(this, CustomError)
+    }
+  }
+  const fn = {
+    '/*': {
+      * get (req, res) {
+        yield Promise.reject(new CustomError(404))
+      }
+    }
+  }
+  try {
+    const url = await getUrl(fn)
+    await request(url + '/')
+  } catch (res) {
+    t.equal(res.statusCode, 404, '404 status code')
+    t.equal(res.error, 'Internal system error')
+  }
+})
+
+test('internal system error preserves statusCode for synchronous code', async t => {
+  t.plan(2)
+  class CustomError extends Error {
+    constructor (code) {
+      super('secret stacktrace')
+      this.statusCode = code
+      Error.captureStackTrace(this, CustomError)
+    }
+  }
+  const fn = {
+    '/*': {
+      get (req, res) {
+        throw new CustomError(404)
+      }
+    }
+  }
+  try {
+    const url = await getUrl(fn)
+    await request(url + '/')
+  } catch (res) {
+    t.equal(res.statusCode, 404, '404 status code')
+    t.equal(res.error, 'Internal system error')
+  }
+})
