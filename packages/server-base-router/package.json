@@ -1,6 +1,6 @@
 {
   "name": "server-base-router",
-  "version": "6.1.4",
+  "version": "6.1.5",
   "description": "server base router",
   "main": "src/index.js",
   "keywords": "http router server-base middleware",
@@ -24,7 +24,7 @@
     "is-generator-function": "1.0.7",
     "mime": "2.4.0",
     "run-duck-run": "2.1.1",
-    "server-base-log": "6.1.4"
+    "server-base-log": "6.1.5"
   },
   "license": "Apache-2.0"
 }
