@@ -1,12 +1,15 @@
 const mime = require('mime')
 const path = require('path')
 const routes = require('http-hash')
-const json = require('body/json')
-const form = require('body/form')
+const body = require('raw-body')
 const createLog = require('server-base-log')
 const isGenerator = require('is-generator-function')
 const runGenerator = require('run-duck-run')
 const fs = require('fs')
+const querystring = require('querystring')
+
+const json = createBodyParser(JSON.parse)
+const form = createBodyParser(data => querystring.parse(data.toString()))
 
 if (process.env.MIME_TYPES) {
   mime.define(JSON.parse(process.env.MIME_TYPES), { force: true })
@@ -17,7 +20,7 @@ if (process.env.MIME_TYPES_PATH) {
     .readFileSync(process.env.MIME_TYPES_PATH, 'ascii')
     .split(/[\r\n]+/)) {
     const fields = line.replace(/\s*#.*|^\s*|\s*$/g, '').split(/\s+/)
-    const [ key, types ] = [fields.shift(), fields]
+    const [key, types] = [fields.shift(), fields]
     if (key) mime.define({ [key]: types })
   }
 }
@@ -190,7 +193,7 @@ function create (name, routeDefinitions) {
     const args = parseBodyArguments(opt, cb)
     opt = args.opt
     cb = args.cb
-    json(q, r, { limit: opt.limit }, (err, payload) => {
+    json(q, { limit: opt.limit }, (err, payload) => {
       if (err) return r.error(err)
       if (opt && opt.log) context.log.info('json request %s %j', q.url, payload)
       try {
@@ -254,4 +257,17 @@ function responseHelpers (context, q, r) {
   }
   r.json = json => r.end(JSON.stringify(json))
   r.text = r.end.bind(r)
+}
+
+function createBodyParser (parse) {
+  return (q, opt, cb) => {
+    body(q, opt, (err, data) => {
+      if (err) return cb(err)
+      try {
+        cb(null, parse(data))
+      } catch (err) {
+        cb(err)
+      }
+    })
+  }
 }
