@@ -86,7 +86,7 @@ function create (name, routeDefinitions) {
     const next = err => {
       if (err) return res.error(err)
       const fn = fns.shift() || done
-      callRoute(fn)(req, res, next)
+      callRoute(fn, req, res, next)
     }
     next()
   }
@@ -107,20 +107,18 @@ function create (name, routeDefinitions) {
     if (result && result.next) callGenerator(result, bail)
   }
 
-  function callRoute (fn) {
-    return function () {
-      const res = arguments[1]
-      const error = err => {
-        context.log.error(err)
-        res.error(internalErrorMessage, err.statusCode)
-      }
-      try {
-        const result = fn.apply(context, arguments)
-        if (result && result.catch) result.catch(error)
-        if (result && result.next) callGenerator(result, error)
-      } catch (err) {
-        error(err)
-      }
+  function callRoute (fn, ...args) {
+    const res = args[1]
+    const error = err => {
+      context.log.error(err)
+      res.error(internalErrorMessage, err.statusCode)
+    }
+    try {
+      const result = fn.apply(context, args)
+      if (result && result.catch) result.catch(error)
+      if (result && result.next) callGenerator(result, error)
+    } catch (err) {
+      error(err)
     }
   }
 
@@ -134,7 +132,7 @@ function create (name, routeDefinitions) {
           typeof match.handler === 'function'
             ? match.handler
             : methodWrap(context, req.method, match.handler)
-        return callRoute(fn)(req, res, match.params, match.splat)
+        return callRoute(fn, req, res, match.params, match.splat)
       }
       context.notFound(req, res)
     })
