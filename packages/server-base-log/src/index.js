@@ -11,7 +11,6 @@ function createLog (name, opt) {
     opt = Object.assign(
       {},
       {
-        safe: true,
         serializers: pino.stdSerializers,
         level: level
       },
