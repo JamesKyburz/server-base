@@ -212,8 +212,7 @@ function parseBodyArguments (opt, cb) {
     cb = opt
     opt = {}
   }
-  opt = Object.assign({ log: true }, opt)
-  return { opt, cb }
+  return { opt: { log: true, ...opt }, cb }
 }
 
 function methodWrap (context, method, methods) {
