@@ -125,17 +125,19 @@ function create (name, routeDefinitions) {
   function defaultRoute (req, res) {
     requestHelpers(context, req, res)
     responseHelpers(context, req, res)
-    applyMiddleware(req, res, function () {
-      const match = router.get(req.url)
-      if (match.handler) {
-        const fn =
-          typeof match.handler === 'function'
-            ? match.handler
-            : methodWrap(context, req.method, match.handler)
-        return callRoute(fn, req, res, match.params, match.splat)
-      }
-      context.notFound(req, res)
-    })
+    applyMiddleware(req, res, matchRoute)
+  }
+
+  function matchRoute (req, res) {
+    const match = router.get(req.url)
+    if (match.handler) {
+      const fn =
+        typeof match.handler === 'function'
+          ? match.handler
+          : methodWrap(context, req.method, match.handler)
+      return callRoute(fn, req, res, match.params, match.splat)
+    }
+    context.notFound(req, res)
   }
 
   function mimeTypes (req, res, next) {
