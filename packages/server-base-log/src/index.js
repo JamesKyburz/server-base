@@ -4,25 +4,19 @@ let log
 
 module.exports = createLog
 
-function createLog (name, opt) {
+function createLog (name, opt = {}) {
   if (!log) {
     const level = process.env.LOG_LEVEL || 'debug'
 
-    opt = Object.assign(
-      {},
-      {
-        serializers: pino.stdSerializers,
-        level: level
-      },
-      opt
-    )
-
-    if (process.env.LOG_PRETTY) {
-      opt.prettyPrint = opt.prettyPrint || { translateTime: true }
-      opt.prettier = require('pino-pretty')
-    }
-
-    log = pino(opt)
+    log = pino({
+      ...opt,
+      serializers: pino.stdSerializers,
+      level,
+      ...(process.env.LOG_PRETTY && {
+        prettyPrint: opt.prettyPrint || { translateTime: true },
+        prettier: require('pino-pretty')
+      })
+    })
     log.on('error', reportError)
   }
 
