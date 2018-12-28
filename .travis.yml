@@ -2,5 +2,6 @@ sudo: false
 language: node_js
 node_js:
   - "8"
+  - "10"
 script:
   - npx macleod exec npm i && npx macleod exec npm t
