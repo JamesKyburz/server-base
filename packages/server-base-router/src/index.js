@@ -63,13 +63,13 @@ function create (name, routeDefinitions) {
 
   if (routeDefinitions) {
     if (typeof routeDefinitions === 'object') {
-      Object.keys(routeDefinitions).forEach(key => {
+      for (const key of Object.keys(routeDefinitions)) {
         if (key === '@setup') {
           callSetup(routeDefinitions[key])
         } else {
           router.set(key, routeDefinitions[key])
         }
-      })
+      }
     } else {
       routeDefinitions.call(context, router, context)
     }
@@ -223,7 +223,7 @@ function methodWrap (context, method, methods) {
 }
 
 function requestHelpers (context, q, r) {
-  ;['json', 'form'].forEach(type => {
+  for (const type of ['json', 'form']) {
     q[type] = (opt, cb) => {
       const args = parseBodyArguments(opt, cb)
       opt = args.opt
@@ -233,7 +233,7 @@ function requestHelpers (context, q, r) {
         context[`${type}Body`](q, r, opt, data => resolve(data))
       })
     }
-  })
+  }
 }
 
 function responseHelpers (context, q, r) {
