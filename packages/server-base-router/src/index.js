@@ -3,7 +3,6 @@ const path = require('path')
 const routes = require('http-hash')
 const body = require('raw-body')
 const createLog = require('server-base-log')
-const isGenerator = require('is-generator-function')
 const runGenerator = require('run-duck-run')
 const fs = require('fs')
 const querystring = require('querystring')
@@ -92,20 +91,20 @@ function create (name, routeDefinitions) {
     next()
   }
 
+  function callGenerator (iterator, onError) {
+    runGenerator(iterator, err => {
+      if (err) onError(err)
+    })()
+  }
+
   function callSetup (fn) {
     const bail = err => {
       context.log.error(err)
       process.nextTick(() => process.exit(1))
     }
-    const handler = isGenerator(fn)
-      ? runGenerator(fn, err => {
-        if (err) bail(err)
-      })
-      : fn
-    const result = handler.call(context, context, router)
-    if (result && result.catch) {
-      result.catch(bail)
-    }
+    const result = fn.call(context, context, router)
+    if (result && result.catch) result.catch(bail)
+    if (result && result.next) callGenerator(result, bail)
   }
 
   function callRoute (fn) {
@@ -115,14 +114,10 @@ function create (name, routeDefinitions) {
         context.log.error(err)
         res.error(internalErrorMessage, err.statusCode)
       }
-      const handler = isGenerator(fn)
-        ? runGenerator(fn, err => {
-          if (err) error(err)
-        })
-        : fn
       try {
-        const result = handler.apply(context, arguments)
+        const result = fn.apply(context, arguments)
         if (result && result.catch) result.catch(error)
+        if (result && result.next) callGenerator(result, error)
       } catch (err) {
         error(err)
       }
