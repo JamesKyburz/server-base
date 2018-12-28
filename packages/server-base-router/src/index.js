@@ -84,11 +84,12 @@ function create (name, routeDefinitions) {
 
   function applyMiddleware (req, res, done) {
     const fns = context.middlewareFunctions.slice()
-    ;(function next (err) {
+    const next = err => {
       if (err) return res.error(err)
       const fn = fns.shift() || done
       callRoute(fn)(req, res, next)
-    })()
+    }
+    next()
   }
 
   function callSetup (fn) {
