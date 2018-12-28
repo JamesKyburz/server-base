@@ -28,10 +28,7 @@ function createLog (name, opt) {
 
   const child = log.child({ name })
   const methods = ['info', 'fatal', 'debug', 'error', 'trace', 'warn']
-  methods.forEach(key => {
-    child[key] = child[key].bind(child)
-  })
-
+  for (const method of methods) child[method] = child[method].bind(child)
   return child
 }
 
