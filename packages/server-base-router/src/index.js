@@ -55,8 +55,8 @@ function create (name, routeDefinitions) {
   const router = routes()
 
   router.set('/ping', ping)
-  function ping (q, r) {
-    r.end(name)
+  function ping (req, res) {
+    res.end(name)
   }
 
   use([logRequest, mimeTypes])
@@ -82,12 +82,12 @@ function create (name, routeDefinitions) {
     context.middlewareFunctions.push.apply(context.middlewareFunctions, fns)
   }
 
-  function applyMiddleware (q, r, done) {
+  function applyMiddleware (req, res, done) {
     const fns = context.middlewareFunctions.slice()
     ;(function next (err) {
-      if (err) return r.error(err)
+      if (err) return res.error(err)
       const fn = fns.shift() || done
-      callRoute(fn)(q, r, next)
+      callRoute(fn)(req, res, next)
     })()
   }
 
@@ -109,10 +109,10 @@ function create (name, routeDefinitions) {
 
   function callRoute (fn) {
     return function () {
-      const r = arguments[1]
+      const res = arguments[1]
       const error = err => {
         context.log.error(err)
-        r.error(internalErrorMessage, err.statusCode)
+        res.error(internalErrorMessage, err.statusCode)
       }
       const handler = isGenerator(fn)
         ? runGenerator(fn, err => {
@@ -128,78 +128,80 @@ function create (name, routeDefinitions) {
     }
   }
 
-  function defaultRoute (q, r) {
-    requestHelpers(context, q, r)
-    responseHelpers(context, q, r)
-    applyMiddleware(q, r, function () {
-      const match = router.get(q.url)
+  function defaultRoute (req, res) {
+    requestHelpers(context, req, res)
+    responseHelpers(context, req, res)
+    applyMiddleware(req, res, function () {
+      const match = router.get(req.url)
       if (match.handler) {
         const fn =
           typeof match.handler === 'function'
             ? match.handler
-            : methodWrap(context, q.method, match.handler)
-        return callRoute(fn)(q, r, match.params, match.splat)
+            : methodWrap(context, req.method, match.handler)
+        return callRoute(fn)(req, res, match.params, match.splat)
       }
-      context.notFound(q, r)
+      context.notFound(req, res)
     })
   }
 
-  function mimeTypes (q, r, next) {
+  function mimeTypes (req, res, next) {
     let contentType =
-      context.mime.getType(path.extname(q.url)) || context.mime.default_type
+      context.mime.getType(path.extname(req.url)) || context.mime.default_type
     if (contentType === 'text/plain' || contentType === 'text/html') {
       contentType += '; charset=UTF-8'
     }
-    r.setHeader('Content-Type', contentType)
+    res.setHeader('Content-Type', contentType)
     next()
   }
 
-  function logRequest (q, r, next) {
-    context.log.info(q.url)
+  function logRequest (req, res, next) {
+    context.log.info(req.url)
     next()
   }
 
-  function notFound (q, r) {
-    context.log.error('not found %s', q.url)
-    r.writeHead(404)
-    r.end()
+  function notFound (req, res) {
+    context.log.error('not found %s', req.url)
+    res.writeHead(404)
+    res.end()
   }
 
-  function errorReply (q, r, err, statusCode) {
+  function errorReply (req, res, err, statusCode) {
     const message = err.message || err
-    context.log.child({ req: q }).error(err)
-    r.writeHead(statusCode || 500)
-    r.write(message)
-    return r.end()
+    context.log.child({ req }).error(err)
+    res.writeHead(statusCode || 500)
+    res.write(message)
+    return res.end()
   }
 
-  function formBody (q, r, opt, cb) {
+  function formBody (req, res, opt, cb) {
     const args = parseBodyArguments(opt, cb)
     opt = args.opt
     cb = args.cb
 
-    form(q, { limit: opt.limit }, (err, body) => {
-      if (err) return r.error(err)
-      if (opt && opt.log) context.log.info('form request %s %j', q.url, body)
+    form(req, { limit: opt.limit }, (err, body) => {
+      if (err) return res.error(err)
+      if (opt && opt.log) context.log.info('form request %s %j', req.url, body)
       try {
         cb(body)
       } catch (err) {
-        r.error(err)
+        res.error(err)
       }
     })
   }
 
-  function jsonBody (q, r, opt, cb) {
+  function jsonBody (req, res, opt, cb) {
     const args = parseBodyArguments(opt, cb)
     opt = args.opt
     cb = args.cb
-    json(q, { limit: opt.limit }, (err, payload) => {
-      if (err) return r.error(err)
-      if (opt && opt.log) context.log.info('json request %s %j', q.url, payload)
+    json(req, { limit: opt.limit }, (err, payload) => {
+      if (err) return res.error(err)
+      if (opt && opt.log) {
+        context.log.info('json request %s %j', req.url, payload)
+      }
       try {
         cb(payload)
       } catch (err) {
-        r.error(err)
+        res.error(err)
       }
     })
   }
@@ -218,45 +220,48 @@ function methodWrap (context, method, methods) {
   method = method.toLowerCase()
   return (
     methods[method] ||
-    ((q, r) => r.error(`method ${method} not allowed for ${q.url}`, 405))
+    ((req, res) =>
+      res.error(`method ${method} not allowed for ${req.url}`, 405))
   )
 }
 
-function requestHelpers (context, q, r) {
+function requestHelpers (context, req, res) {
   for (const type of ['json', 'form']) {
-    q[type] = (opt, cb) => {
+    req[type] = (opt, cb) => {
       const args = parseBodyArguments(opt, cb)
       opt = args.opt
       cb = args.cb
-      if (typeof cb === 'function') return context[`${type}Body`](q, r, opt, cb)
+      if (typeof cb === 'function') {
+        return context[`${type}Body`](req, res, opt, cb)
+      }
       return new Promise(resolve => {
-        context[`${type}Body`](q, r, opt, data => resolve(data))
+        context[`${type}Body`](req, res, opt, data => resolve(data))
       })
     }
   }
 }
 
-function responseHelpers (context, q, r) {
+function responseHelpers (context, req, res) {
   let errorCode
   let errorText
-  r.notFound = () => context.notFound(q, r)
-  r.setNextErrorMessage = (err, code) => {
+  res.notFound = () => context.notFound(req, res)
+  res.setNextErrorMessage = (err, code) => {
     errorText = err
     errorCode = code
   }
-  r.setNextErrorCode = code => {
+  res.setNextErrorCode = code => {
     errorText = ''
     errorCode = code
   }
-  r.error = (err, code) => {
-    if (errorText && err) context.log.child({ req: q }).error(err)
+  res.error = (err, code) => {
+    if (errorText && err) context.log.child({ req }).error(err)
     const replyCode =
       errorCode || code || (err && err.statusCode ? err.statusCode : 500)
     const replyText = errorText || err
-    context.errorReply(q, r, replyText, replyCode)
+    context.errorReply(req, res, replyText, replyCode)
   }
-  r.json = json => r.end(JSON.stringify(json))
-  r.text = r.end.bind(r)
+  res.json = json => res.end(JSON.stringify(json))
+  res.text = res.end.bind(res)
 }
 
 function createBodyParser (parse) {
