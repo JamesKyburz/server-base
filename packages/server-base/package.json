@@ -12,13 +12,19 @@
     "name": "James Kyburz",
     "email": "james.kyburz@gmail.com"
   },
+  "scripts": {
+    "test": "tap test/*"
+  },
   "files": [
     "src"
   ],
   "dependencies": {
-    "dotenv": "6.2.0",
+    "dotenv": "7.0.0",
     "server-base-log": "6.1.5",
     "server-base-router": "6.1.5"
   },
-  "license": "Apache-2.0"
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "tap": "12.6.0"
+  }
 }

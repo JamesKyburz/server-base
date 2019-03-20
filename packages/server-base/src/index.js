@@ -2,7 +2,7 @@ const http = require('http')
 const log = require('./log')
 const dotenv = require('dotenv')
 const router = require('./router')
-dotenv.load()
+dotenv.config()
 
 const started = {}
 
