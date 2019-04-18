@@ -26,7 +26,7 @@ test('*.txt returns text/plain', async t => {
   })
   t.deepEqual(
     res.headers['content-type'],
-    'text/plain; charset=UTF-8',
+    'text/plain; charset=utf-8',
     'correct content-type'
   )
 })
@@ -56,7 +56,7 @@ test('default mime type is text/plain', async t => {
   })
   t.deepEqual(
     res.headers['content-type'],
-    'text/plain; charset=UTF-8',
+    'text/plain; charset=utf-8',
     'correct content-type'
   )
 })
@@ -79,7 +79,7 @@ test('overriding mime types', async t => {
   t.plan(1)
   const fn = {
     '@setup': ({ mime }) => {
-      mime.define({ 'custom/mime2; charset=UTF-8': ['x'] }, { force: true })
+      mime.define({ 'custom/mime2; charset=utf-8': ['x'] }, { force: true })
     },
     '/test.x': (req, res) => res.text('//')
   }
@@ -87,7 +87,7 @@ test('overriding mime types', async t => {
   const res = await request(url + '/test.x', { resolveWithFullResponse: true })
   t.deepEqual(
     res.headers['content-type'],
-    'custom/mime2; charset=UTF-8',
+    'custom/mime2; charset=utf-8',
     'correct content-type'
   )
 })
@@ -112,7 +112,7 @@ test('mime types lookup only uses extension', async t => {
   t.plan(1)
   const fn = {
     '@setup': ({ mime }) => {
-      mime.define({ 'custom/mime2; charset=UTF-8': ['x'] }, { force: true })
+      mime.define({ 'custom/mime2; charset=utf-8': ['x'] }, { force: true })
     },
     '/application': (req, res) => res.text('')
   }
@@ -120,7 +120,7 @@ test('mime types lookup only uses extension', async t => {
   const res = await request(url + '/application', {
     resolveWithFullResponse: true
   })
-  let expectedMimetype = 'text/plain; charset=UTF-8'
+  let expectedMimetype = 'text/plain; charset=utf-8'
   t.deepEqual(
     res.headers['content-type'],
     expectedMimetype,
