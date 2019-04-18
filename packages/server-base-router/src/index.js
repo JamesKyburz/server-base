@@ -144,7 +144,7 @@ function create (name, routeDefinitions) {
     let contentType =
       context.mime.getType(path.extname(req.url)) || context.mime.default_type
     if (contentType === 'text/plain' || contentType === 'text/html') {
-      contentType += '; charset=UTF-8'
+      contentType += '; charset=utf-8'
     }
     res.setHeader('Content-Type', contentType)
     next()
