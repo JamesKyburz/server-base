@@ -1,14 +1,12 @@
 {
   "name": "test-server-base-router",
   "scripts": {
-    "test": "LOG_LEVEL=fatal tape *.js | tap-spec"
+    "test": "LOG_LEVEL=fatal tap *.js"
   },
   "devDependencies": {
     "request": "2.88.0",
     "request-promise": "4.2.2",
-    "tap": "12.0.1",
-    "tap-spec": "5.0.0",
-    "tape": "4.9.1",
+    "tap": "13.1.2",
     "test-listen-destroy": "1.0.0"
   },
   "private": true,

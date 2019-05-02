@@ -1,5 +1,5 @@
 const listen = require('test-listen-destroy')
-const test = require('tape')
+const { test } = require('tap')
 const router = require('../')
 const request = require('request-promise')
 
@@ -72,7 +72,7 @@ test('failing @setup middleware async function', async (t) => {
     t.ok('process.exit(1) called after crash')
   }
   const url = await getUrl(fn)
-  await request(url)
+  await request(url).catch(f => f)
 })
 
 test('failing @setup middleware generator function', async (t) => {
@@ -88,7 +88,7 @@ test('failing @setup middleware generator function', async (t) => {
     t.ok('process.exit(1) called after crash')
   }
   const url = await getUrl(fn)
-  await request(url)
+  await request(url).catch(f => f)
 })
 
 test('.use middleware prevents request', async (t) => {

@@ -1,5 +1,5 @@
 const listen = require('test-listen-destroy')
-const test = require('tape')
+const { test } = require('tap')
 const router = require('../')
 const request = require('request-promise')
 

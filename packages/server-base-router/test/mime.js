@@ -7,7 +7,7 @@ process.env.MIME_TYPES_PATH = './mime.types'
 process.env.MIME_DEFAULT = 'text/plain'
 
 const listen = require('test-listen-destroy')
-const test = require('tape')
+const { test } = require('tap')
 const router = require('../')
 const mime = require('mime')
 
