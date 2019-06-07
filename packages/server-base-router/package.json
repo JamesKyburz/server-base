@@ -20,7 +20,7 @@
   ],
   "dependencies": {
     "http-hash": "2.0.1",
-    "mime": "2.4.3",
+    "mime": "2.4.4",
     "raw-body": "2.4.0",
     "run-duck-run": "2.2.0",
     "server-base-log": "7.0.23"
