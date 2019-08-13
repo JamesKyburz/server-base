@@ -141,8 +141,9 @@ function create (name, routeDefinitions) {
   }
 
   function mimeTypes (req, res, next) {
+    const strippedUrl = req.url.split(/\/?\?/)[0]
     let contentType =
-      context.mime.getType(path.extname(req.url)) || context.mime.default_type
+      context.mime.getType(path.extname(strippedUrl)) || context.mime.default_type
     if (contentType === 'text/plain' || contentType === 'text/html') {
       contentType += '; charset=utf-8'
     }

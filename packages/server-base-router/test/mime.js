@@ -127,3 +127,19 @@ test('mime types lookup only uses extension', async t => {
     'content-type is set to default mime type'
   )
 })
+
+test('mime types extension lookup works ignores querystring', async t => {
+  t.plan(1)
+  const fn = {
+    '/test.txt*': (req, res) => res.text('test')
+  }
+  const url = await getUrl(fn)
+  const res = await request(url + '/test.txt/?x=1', {
+    resolveWithFullResponse: true
+  })
+  t.deepEqual(
+    res.headers['content-type'],
+    'text/plain; charset=utf-8',
+    'correct content-type'
+  )
+})
