@@ -29,7 +29,7 @@ mime.default_type = process.env.MIME_DEFAULT || 'text/html'
 module.exports = create
 
 function create (name, routeDefinitions) {
-  if (typeof name === 'function' || typeof name === 'object') {
+  if (typeof name === 'function' || typeof name === 'object' || !name) {
     routeDefinitions = name
     name = require(`${process.cwd()}/package.json`).name
   }

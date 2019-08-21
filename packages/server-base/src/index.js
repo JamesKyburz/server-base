@@ -12,7 +12,7 @@ create.log = log
 create.router = router
 
 function create (name, routes) {
-  if (typeof name === 'function' || typeof name === 'object') {
+  if (typeof name === 'function' || typeof name === 'object' || !name) {
     routes = name
     name = require(`${process.cwd()}/package.json`).name
   }
