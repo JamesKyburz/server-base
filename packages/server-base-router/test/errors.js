@@ -51,7 +51,6 @@ test('limit for json', async t => {
     '/*': {
       async post (req, res) {
         await req.json({ limit: '1kb', log: false })
-        res.end()
       }
     }
   }
@@ -75,7 +74,6 @@ test('limit for form', async t => {
     '/*': {
       async post (req, res) {
         await req.form({ limit: '1kb', log: false })
-        res.end()
       }
     }
   }
@@ -106,12 +104,8 @@ test('test handled error in generator', async t => {
   }
   const url = await getUrl(fn)
 
-  try {
-    const res = await request(url + '/')
-    t.deepEqual(res, 'ok', '/ returned ok')
-  } catch (err) {
-    t.fail(err)
-  }
+  const res = await request(url + '/')
+  t.deepEqual(res, 'ok', '/ returned ok')
 })
 
 test('internal system errors, handle async error in generator', async t => {

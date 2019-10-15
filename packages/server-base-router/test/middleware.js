@@ -21,11 +21,11 @@ test('@setup middleware prevents request', async (t) => {
 })
 
 test('@setup middleware gets context and router', async (t) => {
-  t.plan(1)
+  t.plan(2)
   const fn = {
     '@setup': (ctx, router) => {
       ctx.use((req, res, next) => {
-        if (router.get(req.url).handler) return next()
+        t.equals(router.get(req.url).handler, null)
         res.text('default')
       })
     }
@@ -146,8 +146,7 @@ test('middleware calling next with error doesn\'t continue', async (t) => {
     ctx.use([
       (req, res, next) => {
         next(new Error('failed'))
-      },
-      (req, res) => res.end('ok')
+      }
     ])
   }
   const url = await getUrl(fn)

@@ -85,9 +85,8 @@ async function captureStdout (ps) {
     ps.stdout.on('data', data => {
       captured += data
     })
-    ps.on('exit', exitCode => {
-      if (exitCode === 0) return resolve(captured)
-      reject()
+    ps.on('exit', () => {
+      resolve(captured)
     })
   })
 }
