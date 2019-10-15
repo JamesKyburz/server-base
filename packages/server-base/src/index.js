@@ -27,8 +27,12 @@ function create (name, routes) {
     config: config()
   }
 
-  const shutdown = () => {
-    if (server) server.close()
+  const shutdown = port => () => {
+    if (server) {
+      server.close()
+      server = null
+      delete started[port]
+    }
     process.exit(0)
   }
 
@@ -41,16 +45,20 @@ function create (name, routes) {
       server = http.createServer()
       server.listen(port, running)
       started[port] = server
-      process.on('SIGINT', shutdown)
-      process.on('SIGTERM', shutdown)
+      process.once('SIGINT', shutdown(port))
+      process.once('SIGTERM', shutdown(port))
     }
-    addRoutes()
+    addRoutes(port)
     return server
   }
 
-  function addRoutes () {
+  function addRoutes (port) {
     server.removeAllListeners('request')
     server.on('request', router(name, routes))
+    server.on('close', () => {
+      delete started[port]
+      server = null
+    })
   }
 
   function config () {
@@ -69,6 +77,9 @@ function create (name, routes) {
   }
 
   function running () {
-    log(name + ':httpserver').info('running on http://localhost:%s', server.address().port)
+    log(name + ':httpserver').info(
+      'running on http://localhost:%s',
+      server.address().port
+    )
   }
 }
