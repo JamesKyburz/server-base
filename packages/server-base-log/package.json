@@ -20,7 +20,7 @@
   ],
   "dependencies": {
     "pino": "5.13.5",
-    "pino-pretty": "3.2.2"
+    "pino-pretty": "3.3.0"
   },
   "license": "Apache-2.0"
 }
