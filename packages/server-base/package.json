@@ -20,7 +20,7 @@
   ],
   "dependencies": {
     "dotenv": "8.2.0",
-    "server-base-log": "7.0.84",
+    "server-base-log": "7.0.87",
     "server-base-router": "7.0.84"
   },
   "license": "Apache-2.0",
