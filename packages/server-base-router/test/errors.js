@@ -313,3 +313,23 @@ test('internal system error preserves statusCode for synchronous code', async t 
     t.equal(res.error, 'Internal system error')
   }
 })
+
+test('res.error doesn\'t fail if headers have already been sent', async t => {
+  t.plan(2)
+  const fn = {
+    '/*': {
+      get (req, res) {
+        res.error(new Error('failed'), 400)
+        res.error(new Error('this will be ignored because headers have already been sent'), 500)
+      }
+    }
+  }
+  const url = await getUrl(fn)
+
+  try {
+    await request(url)
+  } catch (res) {
+    t.equal(res.statusCode, 400, '400 status code')
+    t.equal(res.error, 'failed')
+  }
+})
