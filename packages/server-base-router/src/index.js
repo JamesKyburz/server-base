@@ -165,9 +165,11 @@ function create (name, routeDefinitions) {
   function errorReply (req, res, err, statusCode) {
     const message = err.message || err
     context.log.child({ req }).error(err)
-    res.writeHead(statusCode || 500)
-    res.write(message)
-    return res.end()
+    if (!res.headersSent) {
+      res.writeHead(statusCode || 500)
+      res.write(message)
+      res.end()
+    }
   }
 
   function formBody (req, res, opt, cb) {
