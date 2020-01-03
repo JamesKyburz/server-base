@@ -4,7 +4,7 @@
     "test": "tap *.js"
   },
   "devDependencies": {
-    "tap": "14.9.1"
+    "tap": "14.10.5"
   },
   "private": true,
   "dependencies": {}

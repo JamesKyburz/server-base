@@ -6,7 +6,7 @@
   "devDependencies": {
     "request": "2.88.0",
     "request-promise": "4.2.5",
-    "tap": "14.9.1",
+    "tap": "14.10.5",
     "test-listen-destroy": "1.0.0"
   },
   "private": true,
