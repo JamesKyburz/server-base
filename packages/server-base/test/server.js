@@ -33,6 +33,36 @@ test('test single route', async t => {
   })
 })
 
+test('test start with callback', async t => {
+  t.plan(1)
+  const server = base({}).start(5000, err => t.ok('callback called'))
+  const response = await get(server.address().port + '/ping')
+  await new Promise((resolve, reject) => {
+    server.once('close', resolve)
+    server.close()
+  })
+})
+
+test('test start with no callback', async t => {
+  const server = base({}).start()
+  const response = await get(server.address().port + '/ping')
+  await new Promise((resolve, reject) => {
+    server.once('close', resolve)
+    server.close()
+  })
+})
+
+
+test('test listen with callback', async t => {
+  t.plan(1)
+  const server = base({}).start(5000, err => t.ok('callback called'))
+  const response = await get(server.address().port + '/ping')
+  await new Promise((resolve, reject) => {
+    server.once('close', resolve)
+    server.close()
+  })
+})
+
 test('test two servers', async t => {
   t.plan(2)
   const fn1 = {

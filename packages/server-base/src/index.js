@@ -23,7 +23,8 @@ function create (name, routes) {
   })
 
   const methods = {
-    start: start,
+    start,
+    listen: start,
     config: config()
   }
 
@@ -38,12 +39,12 @@ function create (name, routes) {
 
   return methods
 
-  function start (port) {
+  function start (port, cb) {
     port = port || process.env.PORT || 0
     server = started[port]
     if (!server) {
       server = http.createServer()
-      server.listen(port, running)
+      server.listen(port, cb || running)
       started[port] = server
       process.once('SIGINT', shutdown(port))
       process.once('SIGTERM', shutdown(port))
