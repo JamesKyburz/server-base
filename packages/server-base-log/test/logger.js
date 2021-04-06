@@ -7,7 +7,7 @@ const log = createLog('test')
 
 if (process.env.FORK) {
   for (const method of logMethods) {
-    log[method](`this is a ${method} message`)
+    log[method](`t.equal is a ${method} message`)
   }
   const req = {
     method: 'PUT'
@@ -22,10 +22,10 @@ if (process.env.FORK) {
 } else {
   test('standard log functions', t => {
     for (const method of [...logMethods, 'child']) {
-      t.is(typeof log[method], 'function')
+      t.equal(typeof log[method], 'function')
     }
     for (const method of logMethods) {
-      t.is(typeof log.child(method)[method], 'function')
+      t.equal(typeof log.child(method)[method], 'function')
     }
     t.end()
   })
@@ -37,7 +37,7 @@ if (process.env.FORK) {
     })
     const captured = await captureStdout(ps)
     const assertions = logMethods.map(
-      method => new RegExp(`this is a ${method} message`)
+      method => new RegExp(`t.equal is a ${method} message`)
     )
     for (const assertion of assertions) {
       t.ok(assertion.test(captured))
@@ -51,7 +51,7 @@ if (process.env.FORK) {
       stdio: 'pipe'
     })
     const captured = await captureStdout(ps)
-    t.ok(!/this is a trace message/.test(captured))
+    t.ok(!/t.equal is a trace message/.test(captured))
     t.end()
   })
 

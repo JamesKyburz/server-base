@@ -1,14 +1,14 @@
 const listen = require('test-listen-destroy')
 const { test } = require('tap')
 const router = require('../')
-const request = require('request-promise')
+const request = require('./test-helpers/request')
 
 const getUrl = (fn) => listen(router(fn))
 
 test('router set /foo returns bar', async (t) => {
   t.plan(2)
   const fn = (router, ctx) => {
-    t.is(typeof ctx.use, 'function', 'context set')
+    t.equal(typeof ctx.use, 'function', 'context set')
     router.set('/foo', {
       get (req, res) {
         res.text('bar')
@@ -17,5 +17,5 @@ test('router set /foo returns bar', async (t) => {
   }
   const url = await getUrl(fn)
   const res = await request(url + '/foo')
-  t.deepEqual(res, 'bar', '/foo returns bar')
+  t.same(res, 'bar', '/foo returns bar')
 })

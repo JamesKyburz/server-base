@@ -4,11 +4,9 @@
     "test": "LOG_LEVEL=fatal tap *.js"
   },
   "devDependencies": {
-    "request": "2.88.0",
-    "request-promise": "4.2.5",
-    "tap": "14.10.7",
+    "form-urlencoded": "^4.4.2",
+    "tap": "15.0.2",
     "test-listen-destroy": "1.0.0"
   },
-  "private": true,
-  "dependencies": {}
+  "private": true
 }

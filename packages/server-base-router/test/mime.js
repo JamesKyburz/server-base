@@ -11,7 +11,7 @@ const { test } = require('tap')
 const router = require('../')
 const mime = require('mime')
 
-const request = require('request-promise')
+const request = require('./test-helpers/request')
 
 const getUrl = fn => listen(router(fn))
 
@@ -24,7 +24,7 @@ test('*.txt returns text/plain', async t => {
   const res = await request(url + '/test.txt', {
     resolveWithFullResponse: true
   })
-  t.deepEqual(
+  t.same(
     res.headers['content-type'],
     'text/plain; charset=utf-8',
     'correct content-type'
@@ -38,7 +38,7 @@ test('*.js returns application/javascript', async t => {
   }
   const url = await getUrl(fn)
   const res = await request(url + '/test.js', { resolveWithFullResponse: true })
-  t.deepEqual(
+  t.same(
     res.headers['content-type'],
     'application/javascript',
     'correct content-type'
@@ -54,7 +54,7 @@ test('default mime type is text/plain', async t => {
   const res = await request(url + '/test.foo', {
     resolveWithFullResponse: true
   })
-  t.deepEqual(
+  t.same(
     res.headers['content-type'],
     'text/plain; charset=utf-8',
     'correct content-type'
@@ -68,7 +68,7 @@ test('custom mime with env', async t => {
   }
   const url = await getUrl(fn)
   const res = await request(url + '/test.x', { resolveWithFullResponse: true })
-  t.deepEqual(
+  t.same(
     res.headers['content-type'],
     'custom/mime',
     'correct content-type'
@@ -85,7 +85,7 @@ test('overriding mime types', async t => {
   }
   const url = await getUrl(fn)
   const res = await request(url + '/test.x', { resolveWithFullResponse: true })
-  t.deepEqual(
+  t.same(
     res.headers['content-type'],
     'custom/mime2; charset=utf-8',
     'correct content-type'
@@ -101,7 +101,7 @@ test('load mime types file', async t => {
   const res = await request(url + '/test.didgeridoo', {
     resolveWithFullResponse: true
   })
-  t.deepEqual(
+  t.same(
     res.headers['content-type'],
     'model/didgeridoo+json',
     'correct content-type'
@@ -121,7 +121,7 @@ test('mime types lookup only uses extension', async t => {
     resolveWithFullResponse: true
   })
   let expectedMimetype = 'text/plain; charset=utf-8'
-  t.deepEqual(
+  t.same(
     res.headers['content-type'],
     expectedMimetype,
     'content-type is set to default mime type'
@@ -137,7 +137,7 @@ test('mime types extension lookup works ignores querystring', async t => {
   const res = await request(url + '/test.txt/?x=1', {
     resolveWithFullResponse: true
   })
-  t.deepEqual(
+  t.same(
     res.headers['content-type'],
     'text/plain; charset=utf-8',
     'correct content-type'

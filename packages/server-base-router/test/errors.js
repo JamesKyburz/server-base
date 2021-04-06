@@ -1,7 +1,7 @@
 const listen = require('test-listen-destroy')
 const { test } = require('tap')
 const router = require('../')
-const request = require('request-promise')
+const request = require('./test-helpers/request')
 
 const getUrl = fn => listen(router(fn))
 
@@ -105,7 +105,7 @@ test('test handled error in generator', async t => {
   const url = await getUrl(fn)
 
   const res = await request(url + '/')
-  t.deepEqual(res, 'ok', '/ returned ok')
+  t.same(res, 'ok', '/ returned ok')
 })
 
 test('internal system errors, handle async error in generator', async t => {

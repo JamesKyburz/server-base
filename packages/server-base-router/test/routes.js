@@ -1,7 +1,7 @@
 const listen = require('test-listen-destroy')
 const { test } = require('tap')
 const router = require('../')
-const request = require('request-promise')
+const request = require('./test-helpers/request')
 
 const getUrl = (fn) => listen(router(fn))
 
@@ -12,7 +12,7 @@ test(':id', async(t) => {
   }
   const url = await getUrl(fn)
   const res = await request(url + '/test/12')
-  t.deepEqual(res, '12', 'parameter id correct')
+  t.same(res, '12', 'parameter id correct')
 })
 
 test(':name/:id', async(t) => {
@@ -22,7 +22,7 @@ test(':name/:id', async(t) => {
   }
   const url = await getUrl(fn)
   const res = await request(url + '/test/john/1')
-  t.deepEqual(res, 'john1', 'parameters correct')
+  t.same(res, 'john1', 'parameters correct')
 })
 
 test('* splat', async (t) => {
@@ -32,7 +32,7 @@ test('* splat', async (t) => {
   }
   const url = await getUrl(fn)
   const res = await request(url + '/get/x/john/12')
-  t.deepEqual(res, 'john/12', 'parameters correct')
+  t.same(res, 'john/12', 'parameters correct')
 })
 
 test('ping', async (t) => {
@@ -40,5 +40,5 @@ test('ping', async (t) => {
   const fn = {}
   const url = await getUrl(fn)
   const res = await request(url + '/ping')
-  t.deepEqual(res, 'test-server-base-router', 'ping')
+  t.same(res, 'test-server-base-router', 'ping')
 })

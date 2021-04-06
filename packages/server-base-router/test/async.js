@@ -1,7 +1,7 @@
 const listen = require('test-listen-destroy')
 const { test } = require('tap')
 const router = require('../')
-const request = require('request-promise')
+const request = require('./test-helpers/request')
 
 const getUrl = (fn) => listen(router(fn))
 
@@ -16,7 +16,7 @@ test('get /foo returns bar', async (t) => {
   }
   const url = await getUrl(fn)
   const res = await request(url + '/foo')
-  t.deepEqual(res, 'bar', '/foo returns bar')
+  t.same(res, 'bar', '/foo returns bar')
 })
 
 test('post /echo json returns given payload', async (t) => {
@@ -37,7 +37,7 @@ test('post /echo json returns given payload', async (t) => {
     json: true
   })
 
-  t.deepEqual(body, { echo: 'echo' }, 'json response')
+  t.same(body, { echo: 'echo' }, 'json response')
 })
 
 test('post /echo form returns given payload', async (t) => {
@@ -58,5 +58,5 @@ test('post /echo form returns given payload', async (t) => {
     json: true
   })
 
-  t.deepEqual(body, { echo: 'echo', i: '42' }, 'form response')
+  t.same(body, { echo: 'echo', i: '42' }, 'form response')
 })

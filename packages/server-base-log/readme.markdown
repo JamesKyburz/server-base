@@ -14,7 +14,7 @@ const log = require('server-base-log')(__filename, { optional pino options })
 log.info('ok')
 ```
 
-`info, fatal, debug, error, trace and warn` are bound to correct this for convenience.
+`info, fatal, debug, error, trace and warn` are bound to correct t.equal for convenience.
 
 # log options
 

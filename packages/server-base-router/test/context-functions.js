@@ -1,7 +1,7 @@
 const listen = require('test-listen-destroy')
 const { test } = require('tap')
 const router = require('../')
-const request = require('request-promise')
+const request = require('./test-helpers/request')
 
 const getUrl = (fn) => listen(router(fn))
 
@@ -17,15 +17,15 @@ test('context functions', async (t) => {
         'use'
       ]
       functions.forEach((name) => {
-        t.is(typeof ctx[name], 'function', `${name} is defined`)
+        t.equal(typeof ctx[name], 'function', `${name} is defined`)
       })
-      t.is(typeof ctx.mime, 'object', 'mime is defined')
-      t.is(typeof ctx.log, 'object', 'log is defined')
+      t.equal(typeof ctx.mime, 'object', 'mime is defined')
+      t.equal(typeof ctx.log, 'object', 'log is defined')
       const pinoMethods = ['info', 'fatal', 'debug', 'error', 'trace', 'warn', 'child']
       pinoMethods.forEach((name) => {
-        t.is(typeof ctx.log[name], 'function', `log.${name} is defined`)
+        t.equal(typeof ctx.log[name], 'function', `log.${name} is defined`)
       })
-      t.true(Array.isArray(ctx.middlewareFunctions), 'middlewareFunctions exposed')
+      t.ok(Array.isArray(ctx.middlewareFunctions), 'middlewareFunctions exposed')
     },
     '/*': (req, res) => {
       res.end()

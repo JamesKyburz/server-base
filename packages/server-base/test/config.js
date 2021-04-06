@@ -4,7 +4,7 @@ const base = require('..')
 
 test('config loads environment variables', t => {
   t.plan(1)
-  t.equals(process.env.PORT, '7000')
+  t.equal(process.env.PORT, '7000')
 })
 
 test('ok assertion of environment variables', t => {
