@@ -5,7 +5,7 @@
   },
   "devDependencies": {
     "form-urlencoded": "^4.4.2",
-    "tap": "15.0.2",
+    "tap": "15.0.9",
     "test-listen-destroy": "1.0.0"
   },
   "private": true
