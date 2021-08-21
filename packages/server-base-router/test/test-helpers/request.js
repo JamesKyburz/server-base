@@ -1,5 +1,5 @@
 const http = require('http')
-const formurlencoded = require('form-urlencoded').default
+const formurlencoded = require('form-urlencoded')
 
 module.exports = (url, opt = {}) =>
   new Promise((resolve, reject) => {
