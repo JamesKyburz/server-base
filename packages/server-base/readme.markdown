@@ -3,7 +3,7 @@
 base for micro services or simple servers
 
 [![js-standard-style](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://github.com/feross/standard)
-[![build status](https://api.travis-ci.org/JamesKyburz/server-base.svg)](https://travis-ci.org/JamesKyburz/server-base)
+[![build status](https://github.com/JamesKyburz/server-base/actions/workflows/main.yml/badge.svg)](https://github.com/JamesKyburz/server-base/actions/workflows/main.yml)
 [![downloads](https://img.shields.io/npm/dm/server-base.svg)](https://npmjs.org/package/server-base)
 
 ### usage
