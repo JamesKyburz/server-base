@@ -19,7 +19,7 @@
     "src"
   ],
   "dependencies": {
-    "dotenv": "14.1.0",
+    "dotenv": "14.2.0",
     "server-base-log": "7.1.29",
     "server-base-router": "7.1.29"
   },
