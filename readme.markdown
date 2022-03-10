@@ -15,6 +15,9 @@ service({
     ctx.use([
       (req, res, next) => next()
     ])
+    ctx.onError([
+      (req, res, error, next) => next()
+    ])
   },
   '/graphql': {
     get (req, res) {

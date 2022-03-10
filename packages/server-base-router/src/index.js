@@ -45,7 +45,9 @@ function create (name, routeDefinitions) {
     formBody,
     errorReply,
     use,
+    onError,
     middlewareFunctions: [],
+    errorFunctions: [],
     setInternalErrorMessage (message) {
       internalErrorMessage = message
     }
@@ -81,6 +83,11 @@ function create (name, routeDefinitions) {
     context.middlewareFunctions.push.apply(context.middlewareFunctions, fns)
   }
 
+  function onError (fn) {
+    const fns = Array.isArray(fn) ? fn : [fn]
+    context.errorFunctions.push.apply(context.errorFunctions, fns)
+  }
+
   function applyMiddleware (req, res, done) {
     const fns = context.middlewareFunctions.slice()
     const next = err => {
@@ -107,11 +114,36 @@ function create (name, routeDefinitions) {
     if (result && result.next) callGenerator(result, bail)
   }
 
+  function applyOnError (req, res, error, done) {
+    const fns = context.errorFunctions.slice()
+    const next = () => {
+      const fn = fns.shift() || done
+      callErrorFunction(fn, req, res, error, next)
+    }
+    next()
+  }
+
+  function callErrorFunction (fn, ...args) {
+    const error = err => {
+      context.log.error(err)
+    }
+    try {
+      const result = fn.apply(context, args)
+      if (result && result.catch) result.catch(error)
+      if (result && result.next) callGenerator(result, error)
+    } catch (err) {
+      error(err)
+    }
+  }
+
   function callRoute (fn, ...args) {
     const res = args[1]
     const error = err => {
       context.log.error(err)
-      res.error(internalErrorMessage, err.statusCode)
+      const req = args[0]
+      applyOnError(req, res, err, () => {
+        res.error(internalErrorMessage, err.statusCode)
+      })
     }
     try {
       const result = fn.apply(context, args)
@@ -143,7 +175,8 @@ function create (name, routeDefinitions) {
   function mimeTypes (req, res, next) {
     const strippedUrl = req.url.split(/\/?\?/)[0]
     let contentType =
-      context.mime.getType(path.extname(strippedUrl)) || context.mime.default_type
+      context.mime.getType(path.extname(strippedUrl)) ||
+      context.mime.default_type
     if (contentType === 'text/plain' || contentType === 'text/html') {
       contentType += '; charset=utf-8'
     }
