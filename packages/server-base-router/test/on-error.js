@@ -95,3 +95,78 @@ test('get with multiple error middleware functions', async t => {
     t.equal(res.error, 'Internal system error')
   }
 })
+
+test('error in middleware function is caught', async t => {
+  t.plan(2)
+  const fn = {
+    '@setup': ctx => {
+      ctx.onError([
+        (req, res, error, next) => {
+          throw new TypeError('middleware failed')
+        }
+      ])
+    },
+    '/foo': {
+      async get (req, res) {
+        throw new Error()
+      }
+    }
+  }
+  try {
+    const url = await getUrl(fn)
+    const res = await request(url + '/foo')
+  } catch (res) {
+    t.equal(res.statusCode, 500, '500 status code')
+    t.equal(res.error, 'Internal system error')
+  }
+})
+
+test('error in async middleware function is caught', async t => {
+  t.plan(2)
+  const fn = {
+    '@setup': ctx => {
+      ctx.onError([
+        async (req, res, error, next) => {
+          throw new TypeError('middleware failed')
+        }
+      ])
+    },
+    '/foo': {
+      async get (req, res) {
+        throw new Error()
+      }
+    }
+  }
+  try {
+    const url = await getUrl(fn)
+    const res = await request(url + '/foo')
+  } catch (res) {
+    t.equal(res.statusCode, 500, '500 status code')
+    t.equal(res.error, 'Internal system error')
+  }
+})
+
+test('error in generator middleware function is caught', async t => {
+  t.plan(2)
+  const fn = {
+    '@setup': ctx => {
+      ctx.onError([
+        function * (req, res, error, next) {
+          throw new TypeError('middleware failed')
+        }
+      ])
+    },
+    '/foo': {
+      async get (req, res) {
+        throw new Error()
+      }
+    }
+  }
+  try {
+    const url = await getUrl(fn)
+    const res = await request(url + '/foo')
+  } catch (res) {
+    t.equal(res.statusCode, 500, '500 status code')
+    t.equal(res.error, 'Internal system error')
+  }
+})

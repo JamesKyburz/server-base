@@ -123,16 +123,17 @@ function create (name, routeDefinitions) {
     next()
   }
 
-  function callErrorFunction (fn, ...args) {
-    const error = err => {
+  function callErrorFunction (fn, req, res, error, next) {
+    const bail = err => {
       context.log.error(err)
+      next()
     }
     try {
-      const result = fn.apply(context, args)
-      if (result && result.catch) result.catch(error)
-      if (result && result.next) callGenerator(result, error)
+      const result = fn.call(context, req, res, error, next)
+      if (result && result.catch) result.catch(bail)
+      if (result && result.next) callGenerator(result, bail)
     } catch (err) {
-      error(err)
+      bail(err)
     }
   }
 
