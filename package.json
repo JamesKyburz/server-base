@@ -9,7 +9,7 @@
     "email": "james.kyburz@gmail.com"
   },
   "scripts": {
-    "test": "npx macleod exec npm i && npx macleod exec npm t"
+    "test": "npx macleod exec npm i --no-save && npx macleod exec npm t"
   },
   "private": true
 }
