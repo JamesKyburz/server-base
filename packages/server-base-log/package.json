@@ -19,7 +19,7 @@
     "src"
   ],
   "dependencies": {
-    "pino": "7.8.0",
+    "pino": "7.8.1",
     "pino-pretty": "7.5.3"
   },
   "license": "Apache-2.0"
