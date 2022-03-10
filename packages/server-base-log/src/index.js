@@ -13,8 +13,13 @@ function createLog (name, opt = {}) {
       serializers: pino.stdSerializers,
       level,
       ...(process.env.LOG_PRETTY && {
-        prettyPrint: opt.prettyPrint || { translateTime: true },
-        prettier: require('pino-pretty')
+        transport: {
+          target: 'pino-pretty',
+          options: {
+            colorize: true,
+            translateTime: true
+          }
+        }
       })
     })
     log.on('error', reportError)
