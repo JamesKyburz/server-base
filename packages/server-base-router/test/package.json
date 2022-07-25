@@ -4,7 +4,7 @@
     "test": "LOG_LEVEL=fatal tap *.js"
   },
   "devDependencies": {
-    "form-urlencoded": "^6.0.6",
+    "form-urlencoded": "^6.0.7",
     "tap": "16.2.0",
     "test-listen-destroy": "1.0.0"
   },
