@@ -19,7 +19,7 @@
     "src"
   ],
   "dependencies": {
-    "dotenv": "16.0.1",
+    "dotenv": "16.0.3",
     "server-base-log": "7.1.32",
     "server-base-router": "7.1.32"
   },
